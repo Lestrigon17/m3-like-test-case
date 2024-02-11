@@ -4,6 +4,12 @@
 
   /* Add your custom configuration here. */
   "compilerOptions": {
-    "strict": false
+    "strict": false,
+    "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true,
+    "skipDefaultLibCheck": true,
+    "target": "ESNext",
+    "module": "CommonJS",
+    "lib": ["DOM", "ESNext", "ES2021.WeakRef"],
   }
 }
