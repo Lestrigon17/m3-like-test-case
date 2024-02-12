@@ -1,5 +1,6 @@
 import { AtomBase } from "./atomBase";
 import { EAtomDamageableEvents } from "./types/eAtomDamageableEvents";
+import { EAtomType } from "./types/eAtomType";
 import { EDamageType } from "./types/eDamageType";
 /**
  * Events:
@@ -10,6 +11,8 @@ export class AtomDamageable extends AtomBase {
     public get isAlive(): boolean { return this.healthInternal > 0; }
     public get health(): number { return this.healthInternal; }
     public set health(value: number) { this.healthInternal = value; }
+
+    protected typeInternal: EAtomType = EAtomType.Damageable;
 
     private healthInternal: number = 0;
     private damageFilters: Map<EDamageType, boolean> = new Map();
