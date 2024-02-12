@@ -11,6 +11,44 @@ export class Coords {
 	private static leftInternal = new Coords(0, -1, true);
 	private static rightInternal = new Coords(0, 1, true);
 
+	private static cacheRangeInternal: Map<string, Coords[]> = new Map();
+
+	public static GetOffsetCoords(from: Coords, to: Coords): Coords {
+		let offsetRow = from.row === to.row ? 0 : from.row < to.row ? 1 : -1;
+		let offsetColumn = from.column === to.column ? 0 : from.column < to.column ? 1 : -1;
+
+		return new Coords(offsetRow, offsetColumn);
+	}
+    
+	public static GetRange(from: Coords, to: Coords, ignoreCache?: boolean): Coords[] {
+		let cacheID = `${from.row}:${from.column}-${to.row}${to.column}`;
+
+		if (!ignoreCache && Coords.cacheRangeInternal.has(cacheID)) return Coords.cacheRangeInternal.get(cacheID)!;
+
+		let coordsList: Coords[] = [];
+		
+		let minRow: number = from.row <= to.row ? from.row : to.row;
+		let maxRow: number = from.row <= to.row ? to.row : from.row;
+
+		let minColumn: number = from.column <= to.column ? from.column : to.column;
+		let maxColumn: number = from.column <= to.column ? to.column : from.column;
+
+		for (let row = minRow; row <= maxRow; row++) {
+			for (let column = minColumn; column <= maxColumn; column++) {
+				coordsList.push(new Coords(row, column));
+			}	
+		}
+
+		Coords.cacheRangeInternal.set(cacheID, coordsList);
+		return coordsList;
+	}
+	public static GetDistance(from: Coords, to: Coords): number {
+		let distanceRow = Math.abs(from.row - to.row);
+		let distanceColumn = Math.abs(from.column - to.column);
+
+		return Math.sqrt(distanceRow ^ 2 + distanceColumn ^ 2);
+	}
+
     public get column(): number { return this.columnInternal; }
     public set column(value: number) {
         if (this.isDisableMutation) return;
