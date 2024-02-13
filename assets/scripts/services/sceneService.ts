@@ -1,5 +1,6 @@
 import { Component, Scene, SceneAsset, _decorator, assetManager, director } from "cc";
-import { Services } from ".";
+import { Services } from "./services";
+
 
 const {ccclass, property} = _decorator;
 // Pre define key
