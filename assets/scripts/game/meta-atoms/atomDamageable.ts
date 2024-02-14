@@ -28,6 +28,11 @@ export class AtomDamageable extends AtomBase {
         return this;
     }
 
+    public SetHealth(value: number): this {
+        this.health = value;
+        return this;
+    }
+
     public SetFilterDamage(damageType: EDamageType, isAllowed: boolean): this {
         this.damageFilters.set(damageType, isAllowed);
         return this;

@@ -24,4 +24,14 @@ export class AtomGravitation extends AtomBase {
 
     private isDivingAffectInternal: boolean = false;
     private isAffectInternal: boolean = true;
+
+    public SetIsAffect(state: boolean): this {
+        this.isAffect = state;
+        return this;
+    }
+
+    public SetIsDivingAffect(state: boolean): this {
+        this.isDivingAffect = state;
+        return this;
+    }
 }
