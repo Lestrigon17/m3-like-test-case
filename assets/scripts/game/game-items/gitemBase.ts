@@ -7,6 +7,7 @@ import { EAtomType } from "../meta-atoms/types/eAtomType";
 import { AtomBase } from "../meta-atoms/atomBase";
 import { AtomRegistry } from "../meta-atoms/atomRegistry";
 import { EGItemBaseEvents } from "./types/gItemBaseEvents";
+import { EGItemType } from "./types/eGItemTypes";
 
 type AtomTypeFromEnum<Key, Storage extends Record<string, abstract new (...args: any[]) => any>> = Key extends keyof Storage ? InstanceType<Storage[Key]> : never;
 
@@ -22,6 +23,7 @@ export abstract class GItemBase extends EventTarget {
 
 	public get isBlocked(): boolean 		{ return this.blockFlags !== EBlockType.None; 	}
 	public get block(): EBlockType 			{ return this.blockFlags; 		    }
+    public get type(): EGItemType            { return this.typeInternal;         }
 
     protected renderLayerInternal: ERenderLayer = ERenderLayer.Base;
     protected physicLayerInternal: EPhysicLayer = EPhysicLayer.Base;
@@ -30,7 +32,13 @@ export abstract class GItemBase extends EventTarget {
     protected coordsInternal: Coords = new Coords();
 
 	protected atomAttachmentsInternal: Map<EAtomType, AtomBase> = new Map();
-    protected view?: Node;
+    protected viewInternal?: Node;
+
+    protected typeInternal: EGItemType = EGItemType.BaseItem;
+
+    constructor() {
+        super();
+    }
 
 	public IsBlockedBy(blockType: EBlockType): boolean {
 		return !!(this.blockFlags & blockType);
@@ -67,16 +75,11 @@ export abstract class GItemBase extends EventTarget {
         return this.atomAttachmentsInternal.get(type) as RType;
     }
 
-    public AddAtom<
-        Key extends EAtomType, 
-        InstanceType = AtomTypeFromEnum<Key, typeof AtomRegistry>
-    >(type: Key, instance: InstanceType): this {
-        if (!type || type in AtomRegistry === false) return undefined;
+    public AddAtom(instance: AtomBase): this {
         if (!instance) return undefined; //TODO: Make throw ReferenceError
-        if (this.atomAttachmentsInternal.has(type)) return undefined; // TODO: Make throw Error because we have atom in storage
+        if (this.atomAttachmentsInternal.has(instance.type)) return undefined; // TODO: Make throw Error because we have atom in storage
 
-        // @ts-ignore // TODO: Why type error?
-        this.atomAttachmentsInternal.set(type, instance);
+        this.atomAttachmentsInternal.set(instance.type, instance);
         
         return this;
     }
