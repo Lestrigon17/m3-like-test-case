@@ -29,14 +29,12 @@ export class GameController extends Component {
 
         // Coords corrector
         this.coordsCorrector.SetGridSize(rows, columns);
-        
+
         // Cell controller
         this.cellController = new CellController();
         this.cellController.SetGridSize(rows, columns);
         this.cellController.on(ECellControllerEvents.OnCreateCell, this.viewController.OnCreateCell, this.viewController);
         this.cellController.CreateCells();
-
-
     }
 
     protected onDestroy(): void {

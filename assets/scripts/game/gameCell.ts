@@ -3,8 +3,9 @@ import { EPhysicLayer } from "./types/ePhysicLayer";
 import { GItemBase } from "./game-items/gItemBase";
 import { Coords } from "./coords";
 import { GameCellView } from "./ui-components/gameCellView";
+import { AtomContainer } from "./meta-atoms/atomContainer";
 
-export class GameCell extends EventTarget {
+export class GameCell extends AtomContainer {
     public get coords(): Coords { return this.coordsInternal; }
 
     protected storage: Map<EPhysicLayer, GItemBase> = new Map();

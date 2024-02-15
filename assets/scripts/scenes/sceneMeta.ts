@@ -16,6 +16,6 @@ export class SceneMeta extends Component {
     }
 
     protected OnClickPlayButton(): void {
-        Services.Storage.get(Services.Types.Scene).Run("game", console.log)
+        Services.Storage.get(Services.Types.Scene).Run("game")
     }
 }

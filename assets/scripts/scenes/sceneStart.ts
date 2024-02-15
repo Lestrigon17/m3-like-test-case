@@ -8,6 +8,6 @@ export class SceneStart extends Component {
     protected onEnable(): void {
         console.log(Services.Storage.get(Services.Types.Scene))
 
-        Services.Storage.get(Services.Types.Scene).Run("meta", console.log)
+        Services.Storage.get(Services.Types.Scene).Run("meta")
     }
 }
