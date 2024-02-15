@@ -40,6 +40,10 @@ export abstract class GItemBase extends EventTarget {
         super();
     }
 
+    public AttachView(view: Node) {
+        this.viewInternal = view;
+    }
+
 	public IsBlockedBy(blockType: EBlockType): boolean {
 		return !!(this.blockFlags & blockType);
 	}
