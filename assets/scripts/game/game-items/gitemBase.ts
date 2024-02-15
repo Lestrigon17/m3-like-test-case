@@ -23,7 +23,8 @@ export abstract class GItemBase extends EventTarget {
 
 	public get isBlocked(): boolean 		{ return this.blockFlags !== EBlockType.None; 	}
 	public get block(): EBlockType 			{ return this.blockFlags; 		    }
-    public get type(): EGItemType            { return this.typeInternal;         }
+    public get type(): EGItemType           { return this.typeInternal;         }
+    public get coords(): Coords             { return this.coordsInternal;       }
 
     protected renderLayerInternal: ERenderLayer = ERenderLayer.Base;
     protected physicLayerInternal: EPhysicLayer = EPhysicLayer.Base;

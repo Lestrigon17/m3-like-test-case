@@ -11,6 +11,10 @@ export class Coords {
 	private static leftInternal = new Coords(0, -1, true);
 	private static rightInternal = new Coords(0, 1, true);
 
+	public static IsCoords(item: any): item is Coords {
+		return item instanceof Coords;
+	}
+
 	private static cacheRangeInternal: Map<string, Coords[]> = new Map();
 
 	public static GetOffsetCoords(from: Coords, to: Coords): Coords {
