@@ -1,10 +1,12 @@
-import { Component, UITransform, _decorator } from "cc";
+import { Component, UITransform, Vec3, _decorator } from "cc";
+import { Coords } from "../coords";
 
 const {ccclass, property, requireComponent} = _decorator;
 
 @requireComponent(UITransform)
 @ccclass("CoordsCorrector")
 export class CoordsCorrector extends Component {
+    public get cellSize(): number { return this.cellSizeInternal; }
     protected uiTransform!: UITransform;
 
     protected maxRow: number = 0;
@@ -13,7 +15,7 @@ export class CoordsCorrector extends Component {
     protected minX: number = 0;
     protected minY: number = 0;
 
-    protected cellSize: number = 100;
+    protected cellSizeInternal: number = 100;
 
     protected onLoad(): void {
         this.uiTransform = this.getComponent(UITransform);
@@ -23,11 +25,40 @@ export class CoordsCorrector extends Component {
         this.maxRow = maxRow;
         this.maxColumn = maxColumn;
 
-        this.cellSize = this.CalculateCellSize();
+        this.cellSizeInternal = this.CalculateCellSize();
         this.UpdateMinimalPositions();
 
         return this;
     }
+
+    // Надо оптимизировать вычесления и вынести в статику
+	public ConvertToPosition(coords: Coords, toWorldSpace?: boolean): Vec3 {
+		let currentX: number = 	this.minX
+								+ coords.column * this.cellSizeInternal;
+		let currentY: number = 	this.minY
+								- coords.row * this.cellSizeInternal;
+
+		const relativePos = new Vec3(
+			currentX,
+			currentY,
+			0
+		);
+		
+		if (!toWorldSpace) return relativePos;
+		
+		return this.uiTransform.convertToWorldSpaceAR(relativePos);
+	}
+
+	public ConvertFromPosition(position: Vec3): Coords | null {
+		let coordinateRow: number = 
+			Math.abs( Math.floor( (position.y - this.minY) / this.cellSizeInternal ) );
+
+		let coordinateColumn: number = 
+			Math.abs( Math.floor( ( position.x - this.minX )  / this.cellSizeInternal ) );
+
+		return new Coords(coordinateRow, coordinateColumn);
+	}
+
 
     private CalculateCellSize(): number {
         const cellByWidth = Math.floor(this.uiTransform.width / this.maxColumn);
@@ -37,8 +68,9 @@ export class CoordsCorrector extends Component {
     }
 
     private UpdateMinimalPositions(): void {
-        const halfCellSize = this.cellSize / 2;
-        this.minX = (this.cellSize * this.maxColumn) / 2 * -1 + halfCellSize;
-        this.minY = (this.cellSize * this.maxRow) / 2 - halfCellSize;
+        const halfCellSize = this.cellSizeInternal / 2;
+        this.minX = (this.cellSizeInternal * this.maxColumn) / 2 * -1 + halfCellSize;
+        this.minY = (this.cellSizeInternal * this.maxRow) / 2 - halfCellSize;
     }
+    
 }

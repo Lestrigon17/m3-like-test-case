@@ -4,6 +4,7 @@ import type { ViewPrefabStorage } from "../ViewPrefabStorage";
 import { EGItemType } from "../game-items/types/eGItemTypes";
 import { GameCellView } from "../ui-components/gameCellView";
 import { ViewConfig } from "../ViewConfig";
+import { CoordsCorrector } from "./coordsCorrector";
 
 const {ccclass, property} = _decorator;
 
@@ -11,11 +12,12 @@ export class ViewController extends EventTarget {
     constructor(
         private viewPrefabStorage: ViewPrefabStorage,
         private viewConfig: ViewConfig,
+        private coordsCorrector: CoordsCorrector,
     ) {
         super();
     }
 
-    protected OnCreateCell(cell: GameCell): void {
+    public OnCreateCell(cell: GameCell): void {
         const prefab = this.viewPrefabStorage.cellPrefab;
         if (!prefab) throw new ReferenceError("Can't find prefab for cell!");
         
@@ -26,7 +28,9 @@ export class ViewController extends EventTarget {
         if (!component) throw new ReferenceError("Can't find component gameCellView in cell node");
 
         node.setParent(this.viewConfig.fieldCells);
+        node.setPosition(this.coordsCorrector.ConvertToPosition(cell.coords));
 
+        component.SetTargetSize(this.coordsCorrector.cellSize);
         cell.AttachView(component);
     }
 }
