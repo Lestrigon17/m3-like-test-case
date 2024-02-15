@@ -1,4 +1,4 @@
 export enum EGItemType {
-    BaseItem = "baseItem",
-    ColorItem = "colorItem",
+    BaseItem,
+    ColorItem,
 }
