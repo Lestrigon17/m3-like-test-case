@@ -14,4 +14,5 @@ class ViewPrefabStorageData {
 @ccclass("ViewPrefabStorage")
 export class ViewPrefabStorage extends Component {
     @property([ViewPrefabStorageData]) prefabs: ViewPrefabStorageData[] = [];
+    @property(Prefab) cellPrefab!: Prefab;
 }
