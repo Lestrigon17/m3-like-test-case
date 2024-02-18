@@ -3,8 +3,8 @@ import { Coords } from "../coords";
 
 const {ccclass, property, requireComponent} = _decorator;
 
-@requireComponent(UITransform)
 @ccclass("CoordsCorrector")
+@requireComponent(UITransform)
 export class CoordsCorrector extends Component {
     public get cellSize(): number { return this.cellSizeInternal; }
     protected uiTransform!: UITransform;

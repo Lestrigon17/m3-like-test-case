@@ -4,6 +4,7 @@ import { GItemRegistry } from "../game-items/gItemRegistry";
 import { EItemControllerEvents } from "../types/eItemControllerEvents";
 import { GItemBase } from "../game-items/gItemBase";
 import { EAtomType } from "../meta-atoms/types/eAtomType";
+import { Coords } from "../coords";
 
 type ItemTypeFromEnum<Key, Storage extends Record<string, abstract new (...args: any[]) => any>> = Key extends keyof Storage ? InstanceType<Storage[Key]> : never;
 /**
@@ -14,11 +15,13 @@ export class ItemController extends EventTarget {
     CreateItem<
         Key extends EGItemType, 
         RType = ItemTypeFromEnum<Key, typeof GItemRegistry>
-    >(type: Key): RType {
+    >(type: Key, coords: Coords): RType {
         if (!type || type in GItemRegistry === false) return;
 
         // @ts-ignore // TODO: Type error? Need review & fix
         const item: GItemBase = new GItemRegistry[type]();
+
+        item.SetCoords(coords);
 
         if (item.HasAtom(EAtomType.Color)) {
             item.GetAtom(EAtomType.Color).RandomizeColor();

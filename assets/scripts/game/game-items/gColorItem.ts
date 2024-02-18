@@ -38,11 +38,11 @@ export class GColorItem extends GItemBase {
             new AtomRegistry[EAtomType.Color]()
         )
 
-        this.GetAtom(EAtomType.Color).on(EAtomColorEvents.OnChanceColor, this.OnChangeColor, this);
+        this.GetAtom(EAtomType.Color).on(EAtomColorEvents.OnChangeColor, this.OnChangeColor, this);
     }
 
     protected OnDestroy(): void {
-        this.GetAtom(EAtomType.Color).off(EAtomColorEvents.OnChanceColor, this.OnChangeColor, this);
+        this.GetAtom(EAtomType.Color).off(EAtomColorEvents.OnChangeColor, this.OnChangeColor, this);
     }
 
     private OnChangeColor(newColor: EGItemColorTypes, oldColor: EGItemColorTypes): void {

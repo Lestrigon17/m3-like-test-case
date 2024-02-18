@@ -1,11 +1,12 @@
 import { Component, Sprite, _decorator } from "cc";
 import { ColorSpriteFrameData } from "./ColorSpriteFrameData";
 import { EGItemColorTypes } from "../game-items/types/eGItemColorTypes";
+import { GItemBaseView } from "./gItemBaseView";
 
 const {ccclass, property} = _decorator;
 
 @ccclass("gItemColorView")
-export class gItemColorView extends Component {
+export class gItemColorView extends GItemBaseView {
     @property(Sprite) background!: Sprite;
     @property(Sprite) iconDestroy!: Sprite;
     @property(Sprite) iconBomb!: Sprite;
@@ -32,6 +33,7 @@ export class gItemColorView extends Component {
     }
 
     protected onLoad(): void {
+        super.onLoad();
         this.iconDestroy.node.active = false;
         this.iconBomb.node.active = false;
         this.iconPetard.node.active = false;

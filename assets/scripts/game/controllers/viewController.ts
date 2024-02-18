@@ -6,6 +6,7 @@ import { ViewConfig } from "../ViewConfig";
 import { CoordsCorrector } from "./coordsCorrector";
 import { GItemBase } from "../game-items/gItemBase";
 import { GameViewsRegistry } from "../ui-components/gameViewsRegistry";
+import { GItemBaseView } from "../ui-components/gItemBaseView";
 
 
 export class ViewController extends EventTarget {
@@ -43,10 +44,13 @@ export class ViewController extends EventTarget {
         const node = instantiate(prefab);
         if (!node) throw new Error(`Can't instantiate prefab for ${item.type}!`);
         
-        const component = node.getComponent(GameViewsRegistry[item.type]);
+        const component: GItemBaseView = node.getComponent(GameViewsRegistry[item.type]);
         if (!component) throw new ReferenceError(`Can't find target component for ${item.type}`);
 
         node.setParent(this.viewConfig.GetLayerFor(item.renderLayer));
         node.setPosition(this.coordsCorrector.ConvertToPosition(item.coords));
+
+        component.SetTargetSize(this.coordsCorrector.cellSize);
+        item.AttachView(component);
     }
 }

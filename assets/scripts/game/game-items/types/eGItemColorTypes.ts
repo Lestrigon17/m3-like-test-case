@@ -1,6 +1,6 @@
 export enum EGItemColorTypes {
-    Base = -1,
-    Blue = 0,
+    Base,
+    Blue,
     Green,
     Purple,
     Red,

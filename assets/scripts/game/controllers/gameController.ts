@@ -24,7 +24,7 @@ export class GameController extends Component {
     private itemController: ItemController;
 
     protected onLoad(): void {
-        const rows = 10, columns = 10;
+        const rows = 35, columns = 35;
 
         // View controller
         this.viewController = new ViewController(

@@ -934,6 +934,9 @@
     "__prefab": {
       "__id__": 41
     },
+    "uiTransform": {
+      "__id__": 38
+    },
     "background": {
       "__id__": 5
     },
@@ -994,7 +997,7 @@
   },
   {
     "__type__": "ColorSpriteFrameData",
-    "type": 0,
+    "type": 1,
     "spriteFrame": {
       "__uuid__": "b49ff329-07bd-4883-acb4-c44c96312c71@4531f",
       "__expectedType__": "cc.SpriteFrame"
@@ -1002,7 +1005,7 @@
   },
   {
     "__type__": "ColorSpriteFrameData",
-    "type": 1,
+    "type": 2,
     "spriteFrame": {
       "__uuid__": "b49ff329-07bd-4883-acb4-c44c96312c71@90878",
       "__expectedType__": "cc.SpriteFrame"
@@ -1010,7 +1013,7 @@
   },
   {
     "__type__": "ColorSpriteFrameData",
-    "type": 2,
+    "type": 3,
     "spriteFrame": {
       "__uuid__": "b49ff329-07bd-4883-acb4-c44c96312c71@bfd33",
       "__expectedType__": "cc.SpriteFrame"
@@ -1018,7 +1021,7 @@
   },
   {
     "__type__": "ColorSpriteFrameData",
-    "type": 3,
+    "type": 4,
     "spriteFrame": {
       "__uuid__": "b49ff329-07bd-4883-acb4-c44c96312c71@b3a44",
       "__expectedType__": "cc.SpriteFrame"
@@ -1026,7 +1029,7 @@
   },
   {
     "__type__": "ColorSpriteFrameData",
-    "type": 4,
+    "type": 5,
     "spriteFrame": {
       "__uuid__": "b49ff329-07bd-4883-acb4-c44c96312c71@d0de1",
       "__expectedType__": "cc.SpriteFrame"
@@ -1034,7 +1037,7 @@
   },
   {
     "__type__": "ColorSpriteFrameData",
-    "type": 0,
+    "type": 1,
     "spriteFrame": {
       "__uuid__": "b49ff329-07bd-4883-acb4-c44c96312c71@5b3b1",
       "__expectedType__": "cc.SpriteFrame"
@@ -1042,7 +1045,7 @@
   },
   {
     "__type__": "ColorSpriteFrameData",
-    "type": 1,
+    "type": 2,
     "spriteFrame": {
       "__uuid__": "b49ff329-07bd-4883-acb4-c44c96312c71@a55c0",
       "__expectedType__": "cc.SpriteFrame"
@@ -1050,7 +1053,7 @@
   },
   {
     "__type__": "ColorSpriteFrameData",
-    "type": 2,
+    "type": 3,
     "spriteFrame": {
       "__uuid__": "b49ff329-07bd-4883-acb4-c44c96312c71@7fc9b",
       "__expectedType__": "cc.SpriteFrame"
@@ -1058,7 +1061,7 @@
   },
   {
     "__type__": "ColorSpriteFrameData",
-    "type": 3,
+    "type": 4,
     "spriteFrame": {
       "__uuid__": "b49ff329-07bd-4883-acb4-c44c96312c71@25f35",
       "__expectedType__": "cc.SpriteFrame"
@@ -1066,7 +1069,7 @@
   },
   {
     "__type__": "ColorSpriteFrameData",
-    "type": 4,
+    "type": 5,
     "spriteFrame": {
       "__uuid__": "b49ff329-07bd-4883-acb4-c44c96312c71@77c79",
       "__expectedType__": "cc.SpriteFrame"
@@ -1081,6 +1084,7 @@
       "__id__": 0
     },
     "fileId": "caeOkbHdROPZL2ysYZRAM4",
+    "instance": null,
     "targetOverrides": null
   }
 ]

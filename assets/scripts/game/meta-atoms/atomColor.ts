@@ -19,7 +19,7 @@ const colorsForRandom = [
 export class AtomColor extends AtomBase {
     public get color(): EGItemColorTypes        { return this.colorInternal;    }
     public set color(value: EGItemColorTypes)   { 
-        this.emit(EAtomColorEvents.OnChanceColor, value, this.colorInternal);
+        this.emit(EAtomColorEvents.OnChangeColor, value, this.colorInternal);
         this.colorInternal = value;
     }
 
@@ -28,6 +28,6 @@ export class AtomColor extends AtomBase {
     private colorInternal: EGItemColorTypes = EGItemColorTypes.Base;
 
     public RandomizeColor(): void {
-        this.colorInternal = colorsForRandom[randomRangeInt(0, colorsForRandom.length)];
+        this.color = colorsForRandom[randomRangeInt(0, colorsForRandom.length)];
     }
 }

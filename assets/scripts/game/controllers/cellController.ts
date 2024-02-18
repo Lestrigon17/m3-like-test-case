@@ -53,8 +53,7 @@ export class CellController extends EventTarget {
 
     public FillField(itemType: EGItemType): void {
         this.EveryCoords((row, column) => {
-            const item = this.itemController.CreateItem(itemType);
-            item.SetCoords(new Coords(row, column));
+            const item = this.itemController.CreateItem(itemType, new Coords(row, column));
 
             this.storageInternal[row][column].SetContent(item.physicLayer, item);
         });

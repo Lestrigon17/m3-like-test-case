@@ -80,6 +80,10 @@ export abstract class GItemBase extends AtomContainer {
         return this;
     }
 
+    public MoveTo(coords: Coords): this {
+        return this;
+    }
+
     protected OnDestroy(): void {}
     protected OnAttachView(): void {}
 }
