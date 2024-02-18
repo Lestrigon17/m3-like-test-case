@@ -10,6 +10,9 @@ import { EAtomType } from "../meta-atoms/types/eAtomType";
 import { EGItemType } from "../game-items/types/eGItemTypes";
 import { ItemController } from "./itemController";
 import { EItemControllerEvents } from "../types/eItemControllerEvents";
+import { ColorCombinationController } from "./colorCombinationController";
+import { EPhysicLayer } from "../types/ePhysicLayer";
+import { isAssignType } from "../gameUtils";
 
 const {ccclass, property} = _decorator;
 
@@ -22,9 +25,10 @@ export class GameController extends Component {
     private cellController: CellController;
     private viewController: ViewController;
     private itemController: ItemController;
+    private colorCombinationController: ColorCombinationController;
 
     protected onLoad(): void {
-        const rows = 35, columns = 35;
+        const rows = 9, columns = 10;
 
         // View controller
         this.viewController = new ViewController(
@@ -45,6 +49,9 @@ export class GameController extends Component {
         this.cellController.SetGridSize(rows, columns);
         this.cellController.on(ECellControllerEvents.OnCreateCell, this.viewController.OnCreateCell, this.viewController);
         this.cellController.CreateCells();
+
+        // Color combination controller
+        this.colorCombinationController = new ColorCombinationController(this.cellController);
         
         // Add generator info for cells
         for (let col = 0; col < columns; col++) {
@@ -56,10 +63,25 @@ export class GameController extends Component {
 
         // Prepare field
         this.cellController.FillField(EGItemType.ColorItem);
+        
+        this.MakeIteration();
     }
 
     protected onDestroy(): void {
         this.cellController.off(ECellControllerEvents.OnCreateCell, this.viewController.OnCreateCell, this.viewController);
         this.itemController.off(EItemControllerEvents.OnCreateItem, this.viewController.OnCreateGameItem, this.viewController);
+    }
+
+    private MakeIteration(): void {
+        const combinations = this.colorCombinationController.GetAvailableCombinations();
+        console.dir(combinations)
+
+        combinations.get(EPhysicLayer.Tiles)?.forEach((combination) => {
+            combination.forEach(item => {
+                if (isAssignType(EGItemType.ColorItem, item)) {
+                    item.SetAvailableCombinations(combination.length);
+                }
+            })
+        })
     }
 }

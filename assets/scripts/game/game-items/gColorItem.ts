@@ -41,6 +41,11 @@ export class GColorItem extends GItemBase {
         this.GetAtom(EAtomType.Color).on(EAtomColorEvents.OnChangeColor, this.OnChangeColor, this);
     }
 
+    public SetAvailableCombinations(count: number): void {
+        if (!this.viewInternal) return;
+        this.viewInternal.SetAvailableCombinations(count);
+    }
+
     protected OnDestroy(): void {
         this.GetAtom(EAtomType.Color).off(EAtomColorEvents.OnChangeColor, this.OnChangeColor, this);
     }

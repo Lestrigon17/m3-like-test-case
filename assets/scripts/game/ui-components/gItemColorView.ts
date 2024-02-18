@@ -32,6 +32,14 @@ export class gItemColorView extends GItemBaseView {
         return this;
     }
 
+    // TODO: Вынести в ENUM, не считать тут
+    public SetAvailableCombinations(count: number): void {
+        this.iconDestroy.node.active = count === 3;
+        this.iconPetard.node.active = count === 4;
+        this.iconRocket.node.active = count === 5;
+        this.iconRainbow.node.active = count >= 6;
+    }
+
     protected onLoad(): void {
         super.onLoad();
         this.iconDestroy.node.active = false;

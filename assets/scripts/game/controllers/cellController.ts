@@ -59,11 +59,11 @@ export class CellController extends EventTarget {
         });
     }
 
-    public GetCell(coords_or_row: Coords, column?: number): undefined | GameCell {
+    public GetCell(coords_or_row: Coords | number, column?: number): undefined | GameCell {
         if (Coords.IsCoords(coords_or_row)) {
-            return this.storageInternal[coords_or_row.row][coords_or_row.column];
+            return this.storageInternal[coords_or_row.row]?.[coords_or_row.column];
         }
 
-        return this.storageInternal[coords_or_row][column ?? 0];
+        return this.storageInternal[coords_or_row]?.[column ?? 0];
     }
 }
