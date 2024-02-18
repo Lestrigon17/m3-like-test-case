@@ -31,4 +31,16 @@ export class GameCell extends AtomContainer {
 
         return this;
     }
+
+    public HasContent(physicLayer: EPhysicLayer): boolean {
+        return this.storage.has(physicLayer);
+    }
+
+    public GetContent(physicLayer: EPhysicLayer): GItemBase | undefined {
+        return this.storage.get(physicLayer);
+    }
+
+    public SetContent(physicLayer: EPhysicLayer, content: GItemBase): void {
+        this.storage.set(physicLayer, content);
+    }
 } 

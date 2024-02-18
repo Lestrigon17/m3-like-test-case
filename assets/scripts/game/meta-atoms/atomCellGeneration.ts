@@ -12,9 +12,11 @@ export class AtomCellGeneration extends AtomBase {
      * @param itemType 
      * @param chance Value must be between 0 and 1
      */
-    public SetChanceFor(itemType: EGItemType, chance: number): void {
+    public SetChanceFor(itemType: EGItemType, chance: number): this {
         chance = Math.min(Math.max(chance, 0), 1);
         this.chanceRules.set(itemType, chance);
+
+        return this;
     }
 
     public GetChanceFor(itemType: EGItemType): number {

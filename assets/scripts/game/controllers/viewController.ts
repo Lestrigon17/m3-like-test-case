@@ -1,12 +1,12 @@
-import { Component, _decorator, instantiate } from "cc";
+import { instantiate } from "cc";
 import { GameCell } from "../gameCell";
 import type { ViewPrefabStorage } from "../ViewPrefabStorage";
-import { EGItemType } from "../game-items/types/eGItemTypes";
 import { GameCellView } from "../ui-components/gameCellView";
 import { ViewConfig } from "../ViewConfig";
 import { CoordsCorrector } from "./coordsCorrector";
+import { GItemBase } from "../game-items/gItemBase";
+import { GameViewsRegistry } from "../ui-components/gameViewsRegistry";
 
-const {ccclass, property} = _decorator;
 
 export class ViewController extends EventTarget {
     constructor(
@@ -32,5 +32,21 @@ export class ViewController extends EventTarget {
 
         component.SetTargetSize(this.coordsCorrector.cellSize);
         cell.AttachView(component);
+    }
+
+    public OnCreateGameItem(item: GItemBase): void {
+        if (item.type in GameViewsRegistry === false) return;
+        
+        const prefab = this.viewPrefabStorage.prefabs.find(data => data.type === item.type)?.prefab;
+        if (!prefab) throw new ReferenceError(`Can't find prefab for ${item.type}!`);
+        
+        const node = instantiate(prefab);
+        if (!node) throw new Error(`Can't instantiate prefab for ${item.type}!`);
+        
+        const component = node.getComponent(GameViewsRegistry[item.type]);
+        if (!component) throw new ReferenceError(`Can't find target component for ${item.type}`);
+
+        node.setParent(this.viewConfig.GetLayerFor(item.renderLayer));
+        node.setPosition(this.coordsCorrector.ConvertToPosition(item.coords));
     }
 }

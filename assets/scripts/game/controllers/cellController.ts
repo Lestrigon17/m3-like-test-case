@@ -1,18 +1,32 @@
 import { EventTarget } from "cc";
 import { GameCell } from "../gameCell";
 import { ECellControllerEvents } from "../types/eCellControllerEvents";
+import { EGItemType } from "../game-items/types/eGItemTypes";
+import { Coords } from "../coords";
+
+import type { ItemController } from "./itemController";
+import { EAtomType } from "../meta-atoms/types/eAtomType";
+import { GItemBase } from "../game-items/gItemBase";
 
 export class CellController extends EventTarget {
-    protected storage: Array<GameCell[]> = [];
+    public get storage(): Array<GameCell[]> { return this.storageInternal; }
+
+    protected storageInternal: Array<GameCell[]> = [];
     protected maxRow: number = 0;
     protected maxColumn: number = 0;
+
+    constructor(
+        private itemController: ItemController
+    ) {
+        super();
+    }
 
     public SetGridSize(maxRow: number, maxColumn: number): this {
         this.maxRow = maxRow;
         this.maxColumn = maxColumn;
 
         for (let row = 0; row < maxRow; row++) {
-            this.storage[row] ??= [];
+            this.storageInternal[row] ??= [];
         }
 
         return this;
@@ -23,7 +37,7 @@ export class CellController extends EventTarget {
             const cell = new GameCell();
             cell.SetCoords(row, column);
             
-            this.storage[row][column] = cell;
+            this.storageInternal[row][column] = cell;
             this.emit(ECellControllerEvents.OnCreateCell, cell, row, column);
         })
         return this;
@@ -35,5 +49,22 @@ export class CellController extends EventTarget {
                 callback(row, column);
             }
         }
+    }
+
+    public FillField(itemType: EGItemType): void {
+        this.EveryCoords((row, column) => {
+            const item = this.itemController.CreateItem(itemType);
+            item.SetCoords(new Coords(row, column));
+
+            this.storageInternal[row][column].SetContent(item.physicLayer, item);
+        });
+    }
+
+    public GetCell(coords_or_row: Coords, column?: number): undefined | GameCell {
+        if (Coords.IsCoords(coords_or_row)) {
+            return this.storageInternal[coords_or_row.row][coords_or_row.column];
+        }
+
+        return this.storageInternal[coords_or_row][column ?? 0];
     }
 }
