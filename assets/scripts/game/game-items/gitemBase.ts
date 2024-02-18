@@ -1,4 +1,4 @@
-import { Node } from "cc";
+import { CCObject, Node } from "cc";
 import { Coords } from "../coords";
 import { EBlockType } from "../types/eBlockLayer";
 import { EPhysicLayer } from "../types/ePhysicLayer";
@@ -28,7 +28,7 @@ export abstract class GItemBase extends AtomContainer {
     protected blockFlags: EBlockType = EBlockType.None;
     protected coordsInternal: Coords = new Coords();
 
-    protected viewInternal?: Node;
+    protected viewInternal?: CCObject;
 
     protected typeInternal: EGItemType = EGItemType.BaseItem;
 
@@ -36,8 +36,13 @@ export abstract class GItemBase extends AtomContainer {
         super();
     }
 
-    public AttachView(view: Node) {
+    public Destroy(): void {
+        this.OnDestroy();
+    }
+
+    public AttachView(view: CCObject) {
         this.viewInternal = view;
+        this.OnAttachView();
     }
 
 	public IsBlockedBy(blockType: EBlockType): boolean {
@@ -74,4 +79,7 @@ export abstract class GItemBase extends AtomContainer {
 
         return this;
     }
+
+    protected OnDestroy(): void {}
+    protected OnAttachView(): void {}
 }
