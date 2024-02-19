@@ -45,7 +45,7 @@ export class ColorCombinationController extends EventTarget {
         return combinations;
     }
 
-    private GetAvailableCombinationFor(layer: EPhysicLayer, row: number, column: number): GItemBase[] {
+    public GetAvailableCombinationFor(layer: EPhysicLayer, row: number, column: number): GItemBase[] {
         const cell = this.cellController.GetCell(row, column);
         if (!cell) return [];
 

@@ -12,12 +12,14 @@ import { ItemController } from "./itemController";
 import { EItemControllerEvents } from "../types/eItemControllerEvents";
 import { ColorCombinationController } from "./colorCombinationController";
 import { EPhysicLayer } from "../types/ePhysicLayer";
-import { isAssignType } from "../gameUtils";
+import { everyPhysicLayer, getColorCombination, isAssignType } from "../gameUtils";
 import { CursorController } from "./cursorController";
 import { ECursorControllerEvents } from "../types/eCursorControllerEvents";
 import { Coords } from "../coords";
 import { DamageController } from "./damageController";
 import { EDamageType } from "../meta-atoms/types/eDamageType";
+import { GItemBase } from "../game-items/gItemBase";
+import { EColorCombinationType } from "../types/eColorCombinationType";
 
 const {ccclass, property} = _decorator;
 
@@ -99,6 +101,14 @@ export class GameController extends Component {
     }
 
     private OnCursorClick(targetCoords: Coords): void {
-        this.damageController.TakeDamage(targetCoords, EDamageType.Combination, 1);
+        everyPhysicLayer(layer => {
+            const combination = this.colorCombinationController.GetAvailableCombinationFor(layer, targetCoords.row, targetCoords.column);
+            const availableCombination = getColorCombination(combination.length);
+            if (availableCombination === EColorCombinationType.None) return;
+
+            combination.forEach(item => {
+                this.damageController.TakeDamage(item.coords, EDamageType.Combination, 1);
+            })
+        })
     }
 }
