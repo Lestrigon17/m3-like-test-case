@@ -13,6 +13,7 @@ import { EItemControllerEvents } from "../types/eItemControllerEvents";
 import { ColorCombinationController } from "./colorCombinationController";
 import { EPhysicLayer } from "../types/ePhysicLayer";
 import { isAssignType } from "../gameUtils";
+import { CursorController } from "./cursorController";
 
 const {ccclass, property} = _decorator;
 
@@ -21,6 +22,7 @@ export class GameController extends Component {
     @property(ViewPrefabStorage) viewPrefabStorage!: ViewPrefabStorage;
     @property(ViewConfig) viewConfig!: ViewConfig;
     @property(CoordsCorrector) coordsCorrector!: CoordsCorrector;
+    @property(CursorController) cursorController!: CursorController;
 
     private cellController: CellController;
     private viewController: ViewController;
@@ -74,7 +76,6 @@ export class GameController extends Component {
 
     private MakeIteration(): void {
         const combinations = this.colorCombinationController.GetAvailableCombinations();
-        console.dir(combinations)
 
         combinations.get(EPhysicLayer.Tiles)?.forEach((combination) => {
             combination.forEach(item => {

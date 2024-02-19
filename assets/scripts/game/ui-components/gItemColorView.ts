@@ -2,6 +2,7 @@ import { Component, Sprite, _decorator } from "cc";
 import { ColorSpriteFrameData } from "./ColorSpriteFrameData";
 import { EGItemColorTypes } from "../game-items/types/eGItemColorTypes";
 import { GItemBaseView } from "./gItemBaseView";
+import { EColorCombinationType } from "../types/eColorCombinationType";
 
 const {ccclass, property} = _decorator;
 
@@ -33,11 +34,11 @@ export class gItemColorView extends GItemBaseView {
     }
 
     // TODO: Вынести в ENUM, не считать тут
-    public SetAvailableCombinations(count: number): void {
-        this.iconDestroy.node.active = count === 3;
-        this.iconPetard.node.active = count === 4;
-        this.iconRocket.node.active = count === 5;
-        this.iconRainbow.node.active = count >= 6;
+    public SetAvailableCombinationState(type: EColorCombinationType): void {
+        this.iconDestroy.node.active = type === EColorCombinationType.Destroy;
+        this.iconPetard.node.active = type === EColorCombinationType.Petard;
+        this.iconRocket.node.active = type === EColorCombinationType.Rocket;
+        this.iconRainbow.node.active = type === EColorCombinationType.Rainbow;
     }
 
     protected onLoad(): void {

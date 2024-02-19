@@ -9,6 +9,7 @@ import { EGItemType } from "./types/eGItemTypes";
 import { gItemColorView } from "../ui-components/gItemColorView";
 import { EAtomColorEvents } from "../meta-atoms/types/eAtomColorEvents";
 import { EGItemColorTypes } from "./types/eGItemColorTypes";
+import { getColorCombination } from "../gameUtils";
 
 export class GColorItem extends GItemBase {
     protected renderLayerInternal: ERenderLayer = ERenderLayer.Tiles;
@@ -43,7 +44,7 @@ export class GColorItem extends GItemBase {
 
     public SetAvailableCombinations(count: number): void {
         if (!this.viewInternal) return;
-        this.viewInternal.SetAvailableCombinations(count);
+        this.viewInternal.SetAvailableCombinationState(getColorCombination(count));
     }
 
     protected OnDestroy(): void {

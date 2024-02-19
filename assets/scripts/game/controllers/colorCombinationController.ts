@@ -37,8 +37,6 @@ export class ColorCombinationController extends EventTarget {
                     checkedCells[layer][row] ??= [];
                     checkedCells[layer][row][column] = true;
                 })
-
-                if (comb.length < 3) return;
                 
                 combinations.get(layer).push(comb);
             })

@@ -1,4 +1,4 @@
-import { Component, UITransform, Vec3, _decorator } from "cc";
+import { Component, UITransform, Vec2, Vec3, _decorator } from "cc";
 import { Coords } from "../coords";
 
 const {ccclass, property, requireComponent} = _decorator;
@@ -49,12 +49,12 @@ export class CoordsCorrector extends Component {
 		return this.uiTransform.convertToWorldSpaceAR(relativePos);
 	}
 
-	public ConvertFromPosition(position: Vec3): Coords | null {
+	public ConvertFromPosition(position: Vec3 | Vec2): Coords | null {
 		let coordinateRow: number = 
-			Math.abs( Math.floor( (position.y - this.minY) / this.cellSizeInternal ) );
+			Math.abs( Math.floor( (position.y - this.minY + this.cellSizeInternal / 2) / this.cellSizeInternal ) );
 
 		let coordinateColumn: number = 
-			Math.abs( Math.floor( ( position.x - this.minX )  / this.cellSizeInternal ) );
+			Math.abs( Math.floor( ( position.x - this.minX + this.cellSizeInternal / 2 )  / this.cellSizeInternal ) );
 
 		return new Coords(coordinateRow, coordinateColumn);
 	}
