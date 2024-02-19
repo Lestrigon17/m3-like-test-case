@@ -10,9 +10,9 @@ export function isAssignType<Key extends EGItemType>(key: Key, item: GItemBase):
     return item.type === key;
 }
 
+const layers = Object.values(EPhysicLayer).filter((v) => !isNaN(Number(v))).reverse() as EPhysicLayer[];
 export function everyPhysicLayer(callback: (layer: EPhysicLayer) => void): void {
-    const keys = Object.values(EPhysicLayer).filter((v) => !isNaN(Number(v))) as EPhysicLayer[];
-    keys.forEach(key => callback(key))
+    layers.forEach(key => callback(key))
 }
 
 

@@ -10,6 +10,7 @@ import { gItemColorView } from "../ui-components/gItemColorView";
 import { EAtomColorEvents } from "../meta-atoms/types/eAtomColorEvents";
 import { EGItemColorTypes } from "./types/eGItemColorTypes";
 import { getColorCombination } from "../gameUtils";
+import { EAtomDamageableEvents } from "../meta-atoms/types/eAtomDamageableEvents";
 
 export class GColorItem extends GItemBase {
     protected renderLayerInternal: ERenderLayer = ERenderLayer.Tiles;
@@ -28,6 +29,9 @@ export class GColorItem extends GItemBase {
                 .SetFilterDamage(EDamageType.Booster, true)
                 .SetFilterDamage(EDamageType.Combination, true)
         )
+
+        this.GetAtom(EAtomType.Damageable)
+            .on(EAtomDamageableEvents.OnDie, this.Destroy, this);
 
         this.AddAtom(
             new AtomRegistry[EAtomType.Gravitation]()
@@ -49,6 +53,9 @@ export class GColorItem extends GItemBase {
 
     protected OnDestroy(): void {
         this.GetAtom(EAtomType.Color).off(EAtomColorEvents.OnChangeColor, this.OnChangeColor, this);
+        this.GetAtom(EAtomType.Damageable).off(EAtomDamageableEvents.OnDie, this.Destroy, this);
+
+        this.viewInternal?.node.destroy();
     }
 
     private OnChangeColor(newColor: EGItemColorTypes, oldColor: EGItemColorTypes): void {

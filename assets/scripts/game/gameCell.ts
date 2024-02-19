@@ -4,6 +4,8 @@ import { GItemBase } from "./game-items/gItemBase";
 import { Coords } from "./coords";
 import { GameCellView } from "./ui-components/gameCellView";
 import { AtomContainer } from "./meta-atoms/atomContainer";
+import { EAtomType } from "./meta-atoms/types/eAtomType";
+import { EAtomDamageableEvents } from "./meta-atoms/types/eAtomDamageableEvents";
 
 export class GameCell extends AtomContainer {
     public get coords(): Coords { return this.coordsInternal; }
@@ -11,6 +13,8 @@ export class GameCell extends AtomContainer {
     protected storage: Map<EPhysicLayer, GItemBase> = new Map();
     protected coordsInternal: Coords = new Coords();
     protected viewInternal?: GameCellView;
+
+    private dieEvents: Map<EPhysicLayer, () => void | undefined> = new Map();
 
     public AttachView(view: GameCellView) {
         this.viewInternal = view;
@@ -41,6 +45,28 @@ export class GameCell extends AtomContainer {
     }
 
     public SetContent(physicLayer: EPhysicLayer, content: GItemBase): void {
+        if (this.HasContent(physicLayer)) throw Error("Can't attach content to duty layer");
+
         this.storage.set(physicLayer, content);
+
+        const onDie = () => {
+            this.DeleteContent(physicLayer);
+        }
+
+        this.dieEvents.set(physicLayer, onDie);
+        content.GetAtom(EAtomType.Damageable)?.on(EAtomDamageableEvents.OnDie, onDie);
+    }
+
+    public DeleteContent(physicLayer: EPhysicLayer): void {
+        const content = this.storage.get(physicLayer);
+        if (!content) return;
+
+        const dieEvent = this.dieEvents.get(physicLayer);
+        if (dieEvent) {
+            content.GetAtom(EAtomType.Damageable)?.off(EAtomDamageableEvents.OnDie, dieEvent);
+            this.dieEvents.delete(physicLayer);
+        }
+
+        this.storage.delete(physicLayer);
     }
 } 

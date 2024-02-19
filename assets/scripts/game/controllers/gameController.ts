@@ -14,6 +14,10 @@ import { ColorCombinationController } from "./colorCombinationController";
 import { EPhysicLayer } from "../types/ePhysicLayer";
 import { isAssignType } from "../gameUtils";
 import { CursorController } from "./cursorController";
+import { ECursorControllerEvents } from "../types/eCursorControllerEvents";
+import { Coords } from "../coords";
+import { DamageController } from "./damageController";
+import { EDamageType } from "../meta-atoms/types/eDamageType";
 
 const {ccclass, property} = _decorator;
 
@@ -27,6 +31,7 @@ export class GameController extends Component {
     private cellController: CellController;
     private viewController: ViewController;
     private itemController: ItemController;
+    private damageController: DamageController;
     private colorCombinationController: ColorCombinationController;
 
     protected onLoad(): void {
@@ -54,6 +59,12 @@ export class GameController extends Component {
 
         // Color combination controller
         this.colorCombinationController = new ColorCombinationController(this.cellController);
+
+        // Damage controller
+        this.damageController = new DamageController(this.cellController);
+
+        // cursor Controller
+        this.cursorController.node.on(ECursorControllerEvents.OnCursorClick, this.OnCursorClick, this);
         
         // Add generator info for cells
         for (let col = 0; col < columns; col++) {
@@ -72,6 +83,7 @@ export class GameController extends Component {
     protected onDestroy(): void {
         this.cellController.off(ECellControllerEvents.OnCreateCell, this.viewController.OnCreateCell, this.viewController);
         this.itemController.off(EItemControllerEvents.OnCreateItem, this.viewController.OnCreateGameItem, this.viewController);
+        this.cursorController.node.off(ECursorControllerEvents.OnCursorClick, this.OnCursorClick, this);
     }
 
     private MakeIteration(): void {
@@ -84,5 +96,9 @@ export class GameController extends Component {
                 }
             })
         })
+    }
+
+    private OnCursorClick(targetCoords: Coords): void {
+        this.damageController.TakeDamage(targetCoords, EDamageType.Combination, 1);
     }
 }
