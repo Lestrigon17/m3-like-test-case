@@ -1,5 +1,6 @@
 export enum EGItemBaseEvents {
     OnChangeCoords = "onChangeCoords",
     OnBlockSet = "onBlockSet",
-    OnBlockDelete = "onBlockDelete"
+    OnBlockDelete = "onBlockDelete",
+    OnDestroy = "onDestroy",
 }

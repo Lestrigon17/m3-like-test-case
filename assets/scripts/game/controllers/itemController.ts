@@ -18,6 +18,7 @@ export class ItemController extends EventTarget {
     ) {
         super()
     }
+    
     CreateItem<
         Key extends EGItemType, 
         RType = ItemTypeFromEnum<Key, typeof GItemRegistry>

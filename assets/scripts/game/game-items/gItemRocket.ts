@@ -1,4 +1,3 @@
-import { Node } from "cc";
 import { AtomRegistry } from "../meta-atoms/atomRegistry";
 import { EAtomType } from "../meta-atoms/types/eAtomType";
 import { EDamageType } from "../meta-atoms/types/eDamageType";
@@ -7,18 +6,15 @@ import { ERenderLayer } from "../types/eRenderLayer";
 import { GItemBase } from "./gItemBase";
 import { EGItemType } from "./types/eGItemTypes";
 import { gItemColorView } from "../ui-components/gItemColorView";
-import { EAtomColorEvents } from "../meta-atoms/types/eAtomColorEvents";
-import { EGItemColorTypes } from "./types/eGItemColorTypes";
-import { getColorCombination } from "../gameUtils";
 import { EAtomDamageableEvents } from "../meta-atoms/types/eAtomDamageableEvents";
 import { EAtomExplosiveDamagePattern } from "../meta-atoms/types/eAtomExplosiveDamagePattern";
 import { EAtomInteractionEvents } from "../meta-atoms/types/eAtomInteractionEvents";
 
-export class GItemPetard extends GItemBase {
+export class GItemHorizontalRocket extends GItemBase {
     protected renderLayerInternal: ERenderLayer = ERenderLayer.Tiles;
     protected physicLayerInternal: EPhysicLayer = EPhysicLayer.Tiles;
 
-    protected typeInternal: EGItemType = EGItemType.PetardItem;
+    protected typeInternal: EGItemType = EGItemType.HorizontalRocketItem;
 
     protected declare viewInternal?: gItemColorView;
 
@@ -46,7 +42,7 @@ export class GItemPetard extends GItemBase {
 
         this.AddAtom(
             new AtomRegistry[EAtomType.Explosive]()
-                .SetDamagePattern(EAtomExplosiveDamagePattern.Petard)
+                .SetDamagePattern(EAtomExplosiveDamagePattern.RocketHorizontal)
                 .AttachAtomDamageable(this.GetAtom(EAtomType.Damageable))
         )
 

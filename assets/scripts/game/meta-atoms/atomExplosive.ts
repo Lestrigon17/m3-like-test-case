@@ -38,7 +38,7 @@ export class AtomExplosive extends AtomBase {
 
     public Explode(): void {
         this.isActive = false;
-
+        
         if (this.atomDamageable) {
             this.atomDamageable.off(EAtomDamageableEvents.OnDie, this.Explode, this);
         }

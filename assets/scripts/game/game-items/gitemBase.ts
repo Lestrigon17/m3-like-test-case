@@ -39,6 +39,7 @@ export abstract class GItemBase extends AtomContainer {
     }
 
     public Destroy(): void {
+        this.emit(EGItemBaseEvents.OnDestroy);
         this.OnDestroy();
     }
 

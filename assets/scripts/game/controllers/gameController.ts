@@ -24,6 +24,7 @@ import { GravitationController } from "./gravitationController";
 import { SpawnController } from "./spawnController";
 import { AnimationController } from "./animationController";
 import { EGameCellEvents } from "../types/eGameCellEvents";
+import { ExplosionController } from "./explosionsController";
 
 const {ccclass, property} = _decorator;
 
@@ -39,6 +40,7 @@ export class GameController extends Component {
     private itemController: ItemController;
     private spawnController: SpawnController;
     private damageController: DamageController;
+    private explosionController: ExplosionController;
     private animationController: AnimationController;
     private gravitationController: GravitationController;
     private colorCombinationController: ColorCombinationController;
@@ -76,6 +78,13 @@ export class GameController extends Component {
 
         // Damage controller
         this.damageController = new DamageController(this.cellController);
+
+        // Explosion controller
+        this.explosionController = new ExplosionController(
+            this.itemController,
+            this.damageController,
+            this.cellController,
+        )
 
         // cursor Controller
         this.cursorController.node.on(ECursorControllerEvents.OnCursorClick, this.OnCursorClick, this);
@@ -141,7 +150,21 @@ export class GameController extends Component {
     }
 
     private OnCursorClick(targetCoords: Coords): void {
+        const cell = this.cellController.GetCell(targetCoords);
+
         everyPhysicLayer(layer => {
+            const content = cell.GetContent(layer);
+            if (!content) return;
+            if (content.isBlocked) return;
+
+            if (content.HasAtom(EAtomType.Interaction)) {
+                const atomInteraction = content.GetAtom(EAtomType.Interaction);
+                if (atomInteraction.isActive) {
+                    atomInteraction.DoInteract();
+                    return;
+                }
+            }
+
             const combination = this.colorCombinationController.GetAvailableCombinationFor(layer, targetCoords.row, targetCoords.column);
             const availableCombination = getColorCombination(combination.length);
             if (availableCombination === EColorCombinationType.None) return;
@@ -155,7 +178,14 @@ export class GameController extends Component {
                     const cell = this.cellController.GetCell(targetCoords);
                     const item = this.itemController.CreateItem(EGItemType.PetardItem, targetCoords);
                     cell.SetContent(layer, item);
-                    
+
+                    break;
+                }
+                case EColorCombinationType.Rocket: {
+                    const cell = this.cellController.GetCell(targetCoords);
+                    const item = this.itemController.CreateItem(EGItemType.HorizontalRocketItem, targetCoords);
+                    cell.SetContent(layer, item);
+
                     break;
                 }
             }
