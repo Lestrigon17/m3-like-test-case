@@ -1,4 +1,4 @@
-import { Button, EventTarget, instantiate } from "cc";
+import { Button, Color, EventTarget, instantiate } from "cc";
 import { GameCell } from "../gameCell";
 import type { ViewPrefabStorage } from "../ViewPrefabStorage";
 import { GameCellView } from "../ui-components/gameCellView";
@@ -15,6 +15,7 @@ import { GameModel } from "../gameModel";
 import { EGameModelEvents } from "../types/eGameModeEvents";
 import { EViewControllerEvents } from "../types/eViewControllerEvents";
 
+const accentColor = new Color().fromHEX("#00EBFF");
 
 export class ViewController extends EventTarget {
     constructor(
@@ -99,6 +100,10 @@ export class ViewController extends EventTarget {
     public ShowEndGameOverlay(isWin: boolean): void {
         this.viewConfig.endGameOverlay.UpdateStatus(isWin);
         this.viewConfig.endGameOverlay.node.active = true;
+    }
+
+    public UpdateBoosterStatus(status: boolean): void {
+        this.viewConfig.buttonBoosterSwap.normalColor = status ? accentColor : Color.WHITE;
     }
 
 

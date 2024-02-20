@@ -30,6 +30,7 @@ import { GameModel } from "../gameModel";
 import { EGameModelEvents } from "../types/eGameModeEvents";
 import { EViewControllerEvents } from "../types/eViewControllerEvents";
 import { Services } from "../../services/services";
+import { GameCell } from "../gameCell";
 
 const {ccclass, property} = _decorator;
 
@@ -53,6 +54,9 @@ export class GameController extends Component {
 
     private isRequireIteration: boolean = false;
     private isGameFinished: boolean = false;
+    private isBoosterEnabled: boolean = false;
+
+    private attackerContentForBooster?: GItemBase;
 
     protected onLoad(): void {
         const rows = 10, columns = 10;
@@ -193,6 +197,33 @@ export class GameController extends Component {
     private OnCursorClick(targetCoords: Coords): void {
         if (this.isGameFinished) return;
         const cell = this.cellController.GetCell(targetCoords);
+
+        if (this.isBoosterEnabled) {
+            if (!cell.HasContent(EPhysicLayer.Tiles)) return;
+            const targetItem = cell.GetContent(EPhysicLayer.Tiles);
+            if (targetItem.isBlocked) return;
+
+            if (!this.attackerContentForBooster) {
+                this.attackerContentForBooster = targetItem;
+                return;
+            }
+            if (this.attackerContentForBooster.isBlocked) return;
+
+            const cellAttacker = this.cellController.GetCell(this.attackerContentForBooster.coords);
+            const cellTarget = cell;
+
+            cellTarget.ReplaceContent(EPhysicLayer.Tiles, this.attackerContentForBooster);
+            cellAttacker.ReplaceContent(EPhysicLayer.Tiles, targetItem);
+            this.attackerContentForBooster = undefined;
+            
+            this.isBoosterEnabled = false;
+            // TODO: replace to method
+            this.viewController.UpdateBoosterStatus(this.isBoosterEnabled);
+            this.MakeIteration();
+
+            return;
+        }
+
         let isRequireTakeMove = false;
 
         everyPhysicLayer(layer => {
@@ -283,6 +314,7 @@ export class GameController extends Component {
         Services.Storage.get(Services.Types.Scene).Run("game")
     }
     private OnClickSwapBooster(): void {
-
+        this.isBoosterEnabled = !this.isBoosterEnabled;
+        this.viewController.UpdateBoosterStatus(this.isBoosterEnabled);
     }
 }
