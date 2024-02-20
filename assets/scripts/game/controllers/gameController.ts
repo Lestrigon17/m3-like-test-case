@@ -28,6 +28,8 @@ import { ExplosionController } from "./explosionsController";
 import { EGItemColorTypes } from "../game-items/types/eGItemColorTypes";
 import { GameModel } from "../gameModel";
 import { EGameModelEvents } from "../types/eGameModeEvents";
+import { EViewControllerEvents } from "../types/eViewControllerEvents";
+import { Services } from "../../services/services";
 
 const {ccclass, property} = _decorator;
 
@@ -137,6 +139,15 @@ export class GameController extends Component {
 
         this.gameModel.on(EGameModelEvents.OnMovesOver, this.OnMovesOver, this);
         this.gameModel.on(EGameModelEvents.OnScoreGot, this.OnScoreGot, this);
+
+        this.viewController.on(EViewControllerEvents.OnClickExit, this.OnClickExit, this);
+        this.viewController.on(EViewControllerEvents.OnClickRestartGame, this.OnClickRestartGame, this);
+        this.viewController.on(EViewControllerEvents.OnClickSwapBooster, this.OnClickSwapBooster, this);
+    }
+
+    public ShowEndGameOverlay(isWin: boolean): void {
+        this.viewConfig.endGameOverlay.UpdateStatus(isWin);
+        this.viewConfig.endGameOverlay.node.active = true;
     }
 
     protected onDestroy(): void {
@@ -150,6 +161,10 @@ export class GameController extends Component {
         this.cellController.EveryCoords((row, column) => {
             this.cellController.GetCell(row, column)?.off(EGameCellEvents.OnContentStateChanged, this.OnCellContentChanged, this)
         })
+
+        this.viewController.off(EViewControllerEvents.OnClickExit, this.OnClickExit, this);
+        this.viewController.off(EViewControllerEvents.OnClickRestartGame, this.OnClickRestartGame, this);
+        this.viewController.off(EViewControllerEvents.OnClickSwapBooster, this.OnClickSwapBooster, this);
 
         this.viewController.Destroy();
     }
@@ -259,7 +274,19 @@ export class GameController extends Component {
 
     private EndGame(isWin: boolean): void {
         this.isGameFinished = true;
-        console.log(isWin ? "WIN" : "LOSE");
+        this.viewController.ShowEndGameOverlay(isWin);
         // this.viewConfig
+    }
+
+    private OnClickExit(): void {
+        this.isGameFinished = true;
+        Services.Storage.get(Services.Types.Scene).Run("meta");
+    }
+    private OnClickRestartGame(): void {
+        this.isGameFinished = true;
+        Services.Storage.get(Services.Types.Scene).Run("game");
+    }
+    private OnClickSwapBooster(): void {
+
     }
 }

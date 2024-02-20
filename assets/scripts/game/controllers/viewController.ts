@@ -1,4 +1,4 @@
-import { instantiate } from "cc";
+import { Button, EventTarget, instantiate } from "cc";
 import { GameCell } from "../gameCell";
 import type { ViewPrefabStorage } from "../ViewPrefabStorage";
 import { GameCellView } from "../ui-components/gameCellView";
@@ -13,6 +13,7 @@ import { EAtomDamageableEvents } from "../meta-atoms/types/eAtomDamageableEvents
 import { AnimationController } from "./animationController";
 import { GameModel } from "../gameModel";
 import { EGameModelEvents } from "../types/eGameModeEvents";
+import { EViewControllerEvents } from "../types/eViewControllerEvents";
 
 
 export class ViewController extends EventTarget {
@@ -31,6 +32,11 @@ export class ViewController extends EventTarget {
         this.viewConfig.movesLeft.string = String(gameModel.movesLeft);
         this.viewConfig.targetScore.string = String(gameModel.targetScore);
         this.viewConfig.currentScore.string = String(gameModel.currentScore);
+
+        this.viewConfig.buttonExit.node.on(Button.EventType.CLICK, this.OnClickExit, this);
+        this.viewConfig.buttonBoosterSwap.node.on(Button.EventType.CLICK, this.OnClickBoosterSwap, this);
+        this.viewConfig.endGameOverlay.buttonExit.node.on(Button.EventType.CLICK, this.OnClickExit, this);
+        this.viewConfig.endGameOverlay.buttonRestart.node.on(Button.EventType.CLICK, this.OnClickRestart, this);
     }
 
     public OnCreateCell(cell: GameCell): void {
@@ -93,6 +99,11 @@ export class ViewController extends EventTarget {
     public Destroy(): void {
         this.gameModel.off(EGameModelEvents.OnChangeMoves, this.OnChangeMoves, this);
         this.gameModel.off(EGameModelEvents.OnChangeScore, this.OnChangeScore, this);
+
+        this.viewConfig.buttonExit?.node.off(Button.EventType.CLICK, this.OnClickExit, this);
+        this.viewConfig.buttonBoosterSwap?.node.off(Button.EventType.CLICK, this.OnClickBoosterSwap, this);
+        this.viewConfig.endGameOverlay?.buttonExit?.node.off(Button.EventType.CLICK, this.OnClickExit, this);
+        this.viewConfig.endGameOverlay?.buttonRestart?.node.off(Button.EventType.CLICK, this.OnClickRestart, this);
     }
 
     private OnChangeMoves(value: number): void {
@@ -101,5 +112,15 @@ export class ViewController extends EventTarget {
     
     private OnChangeScore(value: number): void {
         this.viewConfig.currentScore.string = String(value);
+    }
+
+    private OnClickExit(): void {
+        this.emit(EViewControllerEvents.OnClickExit);
+    }
+    private OnClickBoosterSwap(): void {
+        this.emit(EViewControllerEvents.OnClickSwapBooster);
+    }
+    private OnClickRestart(): void {
+        this.emit(EViewControllerEvents.OnClickRestartGame);
     }
 }
