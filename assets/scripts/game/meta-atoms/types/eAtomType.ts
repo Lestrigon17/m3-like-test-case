@@ -6,4 +6,5 @@ export enum EAtomType {
     CellGeneration,
     Animation,
     Interaction,
+    Score,
 }

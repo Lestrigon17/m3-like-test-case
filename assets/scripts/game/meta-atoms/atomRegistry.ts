@@ -5,6 +5,7 @@ import { AtomDamageable } from "./atomDamageable";
 import { AtomExplosive } from "./atomExplosive";
 import { AtomGravitation } from "./atomGravitation";
 import { AtomInteraction } from "./atomInteraction";
+import { AtomScore } from "./atomScore";
 import { EAtomType } from "./types/eAtomType";
 
 export const AtomRegistry = {
@@ -15,4 +16,5 @@ export const AtomRegistry = {
     [EAtomType.Animation]: AtomAnimation,
     [EAtomType.Explosive]: AtomExplosive,
     [EAtomType.Interaction]: AtomInteraction,
+    [EAtomType.Score]: AtomScore,
 }
