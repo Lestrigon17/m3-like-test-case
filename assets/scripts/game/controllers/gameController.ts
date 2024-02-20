@@ -46,7 +46,7 @@ export class GameController extends Component {
     private isRequireIteration: boolean = false;
 
     protected onLoad(): void {
-        const rows = 9, columns = 10;
+        const rows = 10, columns = 10;
 
         // View controller
         this.viewController = new ViewController(
@@ -149,6 +149,16 @@ export class GameController extends Component {
             combination.forEach(item => {
                 this.damageController.TakeDamage(item.coords, EDamageType.Combination, 1);
             })
+
+            switch (availableCombination) {
+                case EColorCombinationType.Petard: {
+                    const cell = this.cellController.GetCell(targetCoords);
+                    const item = this.itemController.CreateItem(EGItemType.PetardItem, targetCoords);
+                    cell.SetContent(layer, item);
+                    
+                    break;
+                }
+            }
         })
 
         this.MakeIteration();

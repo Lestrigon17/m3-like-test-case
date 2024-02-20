@@ -36,7 +36,6 @@ export class SpawnController extends EventTarget {
     }
 
     private TryGenerateItems(): void {
-        console.log(1231231)
         this.spawnCellStorage.forEach((cell) => {
             if (cell.HasContent(EPhysicLayer.Tiles)) return;
 
