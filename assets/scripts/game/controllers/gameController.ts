@@ -26,6 +26,8 @@ import { AnimationController } from "./animationController";
 import { EGameCellEvents } from "../types/eGameCellEvents";
 import { ExplosionController } from "./explosionsController";
 import { EGItemColorTypes } from "../game-items/types/eGItemColorTypes";
+import { GameModel } from "../gameModel";
+import { EGameModelEvents } from "../types/eGameModeEvents";
 
 const {ccclass, property} = _decorator;
 
@@ -36,6 +38,7 @@ export class GameController extends Component {
     @property(CoordsCorrector) coordsCorrector!: CoordsCorrector;
     @property(CursorController) cursorController!: CursorController;
 
+    private gameModel: GameModel;
     private cellController: CellController;
     private viewController: ViewController;
     private itemController: ItemController;
@@ -47,9 +50,15 @@ export class GameController extends Component {
     private colorCombinationController: ColorCombinationController;
 
     private isRequireIteration: boolean = false;
+    private isGameFinished: boolean = false;
 
     protected onLoad(): void {
         const rows = 10, columns = 10;
+
+        this.gameModel = new GameModel(
+            200,
+            20
+        )
 
         // Coords corrector
         this.coordsCorrector.SetGridSize(rows, columns);
@@ -62,7 +71,8 @@ export class GameController extends Component {
             this.viewPrefabStorage,
             this.viewConfig,
             this.coordsCorrector,
-            this.animationController
+            this.animationController,
+            this.gameModel,
         )
 
         // Item controller
@@ -79,7 +89,10 @@ export class GameController extends Component {
         this.colorCombinationController = new ColorCombinationController(this.cellController);
 
         // Damage controller
-        this.damageController = new DamageController(this.cellController);
+        this.damageController = new DamageController(
+            this.cellController,
+            this.gameModel
+        );
 
         // Explosion controller
         this.explosionController = new ExplosionController(
@@ -121,6 +134,9 @@ export class GameController extends Component {
         })
         
         this.isRequireIteration = true;
+
+        this.gameModel.on(EGameModelEvents.OnMovesOver, this.OnMovesOver, this);
+        this.gameModel.on(EGameModelEvents.OnScoreGot, this.OnScoreGot, this);
     }
 
     protected onDestroy(): void {
@@ -128,12 +144,25 @@ export class GameController extends Component {
         this.itemController.off(EItemControllerEvents.OnCreateItem, this.viewController.OnCreateGameItem, this.viewController);
         this.cursorController.node.off(ECursorControllerEvents.OnCursorClick, this.OnCursorClick, this);
 
+        this.gameModel.off(EGameModelEvents.OnMovesOver, this.OnMovesOver, this);
+        this.gameModel.off(EGameModelEvents.OnScoreGot, this.OnScoreGot, this);
+
         this.cellController.EveryCoords((row, column) => {
             this.cellController.GetCell(row, column)?.off(EGameCellEvents.OnContentStateChanged, this.OnCellContentChanged, this)
         })
+
+        this.viewController.Destroy();
+    }
+
+    protected lateUpdate(dt: number): void {
+        if (this.isRequireIteration) {
+            this.MakeIteration()
+            this.isRequireIteration = false;
+        }
     }
 
     private MakeIteration(): void {
+        if (this.isGameFinished) return;
         this.gravitationController.MakeIteration();
 
         const combinations = this.colorCombinationController.GetAvailableCombinations();
@@ -152,7 +181,9 @@ export class GameController extends Component {
     }
 
     private OnCursorClick(targetCoords: Coords): void {
+        if (this.isGameFinished) return;
         const cell = this.cellController.GetCell(targetCoords);
+        let isRequireTakeMove = false;
 
         everyPhysicLayer(layer => {
             const content = cell.GetContent(layer);
@@ -171,10 +202,13 @@ export class GameController extends Component {
             const availableCombination = getColorCombination(combination.length);
             if (availableCombination === EColorCombinationType.None) return;
 
+            isRequireTakeMove = true;
+
             combination.forEach(item => {
                 this.damageController.TakeDamage(item.coords, EDamageType.Combination, 1);
             })
 
+            // TODO: refactor this:
             switch (availableCombination) {
                 case EColorCombinationType.Petard: {
                     const cell = this.cellController.GetCell(targetCoords);
@@ -204,6 +238,10 @@ export class GameController extends Component {
             }
         })
 
+        if (isRequireTakeMove) {
+            this.gameModel.movesLeft -= 1;
+        }
+
         this.MakeIteration();
     }
 
@@ -211,10 +249,17 @@ export class GameController extends Component {
         this.isRequireIteration = true;
     }
 
-    protected lateUpdate(dt: number): void {
-        if (this.isRequireIteration) {
-            this.MakeIteration()
-            this.isRequireIteration = false;
-        }
+    private OnMovesOver(): void {
+        this.EndGame(false);
+    }
+
+    private OnScoreGot(): void {
+        this.EndGame(true);        
+    }
+
+    private EndGame(isWin: boolean): void {
+        this.isGameFinished = true;
+        console.log(isWin ? "WIN" : "LOSE");
+        // this.viewConfig
     }
 }

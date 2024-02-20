@@ -11,6 +11,8 @@ import { EGItemBaseEvents } from "../game-items/types/gItemBaseEvents";
 import { EAtomType } from "../meta-atoms/types/eAtomType";
 import { EAtomDamageableEvents } from "../meta-atoms/types/eAtomDamageableEvents";
 import { AnimationController } from "./animationController";
+import { GameModel } from "../gameModel";
+import { EGameModelEvents } from "../types/eGameModeEvents";
 
 
 export class ViewController extends EventTarget {
@@ -19,8 +21,16 @@ export class ViewController extends EventTarget {
         private viewConfig: ViewConfig,
         private coordsCorrector: CoordsCorrector,
         private animationController: AnimationController,
+        private gameModel: GameModel,
     ) {
         super();
+
+        gameModel.on(EGameModelEvents.OnChangeMoves, this.OnChangeMoves, this);
+        gameModel.on(EGameModelEvents.OnChangeScore, this.OnChangeScore, this);
+
+        this.viewConfig.movesLeft.string = String(gameModel.movesLeft);
+        this.viewConfig.targetScore.string = String(gameModel.targetScore);
+        this.viewConfig.currentScore.string = String(gameModel.currentScore);
     }
 
     public OnCreateCell(cell: GameCell): void {
@@ -78,5 +88,18 @@ export class ViewController extends EventTarget {
                 item.off(EGItemBaseEvents.OnChangeCoords, onChangeCoords);
             })
         }
+    }
+
+    public Destroy(): void {
+        this.gameModel.off(EGameModelEvents.OnChangeMoves, this.OnChangeMoves, this);
+        this.gameModel.off(EGameModelEvents.OnChangeScore, this.OnChangeScore, this);
+    }
+
+    private OnChangeMoves(value: number): void {
+        this.viewConfig.movesLeft.string = String(value);
+    }
+    
+    private OnChangeScore(value: number): void {
+        this.viewConfig.currentScore.string = String(value);
     }
 }

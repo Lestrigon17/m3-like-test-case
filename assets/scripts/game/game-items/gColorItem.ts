@@ -47,6 +47,10 @@ export class GColorItem extends GItemBase {
             new AtomRegistry[EAtomType.Animation]()
         )
 
+        this.AddAtom(
+            new AtomRegistry[EAtomType.Score]()
+        )
+
         this.GetAtom(EAtomType.Color).on(EAtomColorEvents.OnChangeColor, this.OnChangeColor, this);
     }
 

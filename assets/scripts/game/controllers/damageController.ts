@@ -4,10 +4,12 @@ import { Coords } from "../coords";
 import { EDamageType } from "../meta-atoms/types/eDamageType";
 import { everyPhysicLayer } from "../gameUtils";
 import { EAtomType } from "../meta-atoms/types/eAtomType";
+import { GameModel } from "../gameModel";
 
 export class DamageController extends EventTarget {
     constructor(
-        private cellController: CellController
+        private cellController: CellController,
+        private gameModel: GameModel,
     ) {
         super();
     }
@@ -40,6 +42,12 @@ export class DamageController extends EventTarget {
             }
 
             damageableAtom.TakeDamage(damageType, originalDamageLeft);
+
+            if (!damageableAtom.isAlive) {
+                if (content.HasAtom(EAtomType.Score)) {
+                    this.gameModel.currentScore += content.GetAtom(EAtomType.Score).points;
+                }
+            }
         })
     }
 }
