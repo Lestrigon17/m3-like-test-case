@@ -9,7 +9,8 @@ const colorsForRandom = [
     EGItemColorTypes.Blue,
     EGItemColorTypes.Green,
     EGItemColorTypes.Purple,
-    EGItemColorTypes.Red
+    EGItemColorTypes.Red,
+    EGItemColorTypes.Yellow
 ]
 
 /**

@@ -30,6 +30,23 @@ export class GravitationController extends EventTarget {
         })
     }
 
+    public IsRequireNextIteration(): boolean {
+        const layer = EPhysicLayer.Tiles;
+        
+        for (let row = this.cellController.maxRow; row > 0; row--) {
+            for (let column = 0; column < this.cellController.maxColumn; column++) {
+                const cell = this.cellController.GetCell(row, column);
+                if (!cell) continue;
+                const content = cell.GetContent(layer);
+                if (content) continue;
+
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     private FindCellWithContentToTop(layer: EPhysicLayer, fromRow: number, fromColumn: number): GameCell | undefined {
         for (let row = (fromRow - 1); row >= 0; row--) {
             const cell = this.cellController.GetCell(row, fromColumn);

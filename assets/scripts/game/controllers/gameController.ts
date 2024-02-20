@@ -21,6 +21,7 @@ import { EDamageType } from "../meta-atoms/types/eDamageType";
 import { GItemBase } from "../game-items/gItemBase";
 import { EColorCombinationType } from "../types/eColorCombinationType";
 import { GravitationController } from "./gravitationController";
+import { SpawnController } from "./spawnController";
 
 const {ccclass, property} = _decorator;
 
@@ -34,6 +35,7 @@ export class GameController extends Component {
     private cellController: CellController;
     private viewController: ViewController;
     private itemController: ItemController;
+    private spawnController: SpawnController;
     private damageController: DamageController;
     private gravitationController: GravitationController;
     private colorCombinationController: ColorCombinationController;
@@ -72,6 +74,13 @@ export class GameController extends Component {
 
         // gravitation controller
         this.gravitationController = new GravitationController(this.cellController);
+
+        // spawn controller
+        this.spawnController = new SpawnController(
+            EGItemType.ColorItem,
+            this.cellController,
+            this.itemController
+        );
         
         // Add generator info for cells 
         for (let col = 0; col < columns; col++) {
@@ -94,7 +103,9 @@ export class GameController extends Component {
     }
 
     private MakeIteration(): void {
+        console.log("Iteration")
         this.gravitationController.MakeIteration();
+        this.spawnController.MakeIteration();
 
         const combinations = this.colorCombinationController.GetAvailableCombinations();
 
@@ -105,6 +116,10 @@ export class GameController extends Component {
                 }
             })
         })
+
+        if (this.gravitationController.IsRequireNextIteration()) {
+            this.MakeIteration();
+        }
     }
 
     private OnCursorClick(targetCoords: Coords): void {
