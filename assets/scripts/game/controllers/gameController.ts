@@ -51,18 +51,19 @@ export class GameController extends Component {
     protected onLoad(): void {
         const rows = 10, columns = 10;
 
-        // View controller
-        this.viewController = new ViewController(
-            this.viewPrefabStorage,
-            this.viewConfig,
-            this.coordsCorrector
-        )
-
         // Coords corrector
         this.coordsCorrector.SetGridSize(rows, columns);
 
         // Animation controller
         this.animationController = new AnimationController(this.coordsCorrector);
+
+        // View controller
+        this.viewController = new ViewController(
+            this.viewPrefabStorage,
+            this.viewConfig,
+            this.coordsCorrector,
+            this.animationController
+        )
 
         // Item controller
         this.itemController = new ItemController(this.animationController);
@@ -178,21 +179,21 @@ export class GameController extends Component {
                 case EColorCombinationType.Petard: {
                     const cell = this.cellController.GetCell(targetCoords);
                     const item = this.itemController.CreateItem(EGItemType.PetardItem, targetCoords);
-                    cell.SetContent(layer, item);
+                    cell.ReplaceContent(layer, item);
 
                     break;
                 }
                 case EColorCombinationType.Rocket: {
                     const cell = this.cellController.GetCell(targetCoords);
                     const item = this.itemController.CreateItem(EGItemType.HorizontalRocketItem, targetCoords);
-                    cell.SetContent(layer, item);
+                    cell.ReplaceContent(layer, item);
 
                     break;
                 }
                 case EColorCombinationType.Rainbow: {
                     const cell = this.cellController.GetCell(targetCoords);
                     const item = this.itemController.CreateItem(EGItemType.RainbowItem, targetCoords);
-                    cell.SetContent(layer, item);
+                    cell.ReplaceContent(layer, item);
 
                     if (item.HasAtom(EAtomType.Color)) {
                         item.GetAtom(EAtomType.Color).color = content.GetAtom(EAtomType.Color)?.color ?? EGItemColorTypes.Yellow;

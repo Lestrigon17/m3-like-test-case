@@ -58,7 +58,14 @@ export class GameCell extends AtomContainer {
         this.storage.set(physicLayer, content);
 
         const onDie = () => {
-            this.DeleteContent(physicLayer);
+            if (content.HasAtom(EAtomType.Animation)) {
+                content.once(EGItemBaseEvents.OnBlockDelete, () => {
+                    if (this.GetContent(physicLayer) !== content) return;
+                    this.DeleteContent(physicLayer);
+                })
+            } else {
+                this.DeleteContent(physicLayer);
+            }
         }
         const OnBlockDelete = () => {
             this.emit(EGameCellEvents.OnContentStateChanged);
@@ -73,7 +80,27 @@ export class GameCell extends AtomContainer {
         this.emit(EGameCellEvents.OnSetContent, content);
     }
 
-    public DeleteContent(physicLayer: EPhysicLayer): void {
+    public ReplaceContent(physicLayer: EPhysicLayer, item: GItemBase): void {
+        const content = this.storage.get(physicLayer);
+        if (content) {
+            const dieEvent = this.dieEvents.get(physicLayer);
+            if (dieEvent) {
+                content.GetAtom(EAtomType.Damageable)?.off(EAtomDamageableEvents.OnDie, dieEvent);
+                this.dieEvents.delete(physicLayer);
+            }
+
+            const blockEvent = this.blockEvents.get(physicLayer);
+            if (blockEvent) {
+                content.off(EGItemBaseEvents.OnBlockDelete, blockEvent);
+            }
+            
+            this.storage.delete(physicLayer);
+        }
+
+        this.SetContent(physicLayer, item);
+    }
+
+    public DeleteContent(physicLayer: EPhysicLayer, isIgnoreEvent: boolean = false): void {
         const content = this.storage.get(physicLayer);
         if (!content) return;
 

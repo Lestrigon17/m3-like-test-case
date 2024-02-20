@@ -48,6 +48,11 @@ export abstract class GItemBase extends AtomContainer {
         this.OnAttachView();
     }
 
+    public DeAttachView() {
+        this.viewInternal = undefined;
+        this.OnDeAttachView();
+    }
+
 	public IsBlockedBy(blockType: EBlockType): boolean {
 		return !!(this.blockFlags & blockType);
 	}
@@ -89,4 +94,5 @@ export abstract class GItemBase extends AtomContainer {
 
     protected OnDestroy(): void {}
     protected OnAttachView(): void {}
+    protected OnDeAttachView(): void {}
 }

@@ -59,7 +59,7 @@ export class GColorItem extends GItemBase {
         this.GetAtom(EAtomType.Color).off(EAtomColorEvents.OnChangeColor, this.OnChangeColor, this);
         this.GetAtom(EAtomType.Damageable).off(EAtomDamageableEvents.OnDie, this.Destroy, this);
 
-        this.viewInternal?.node.destroy();
+        // this.viewInternal?.node.destroy();
     }
 
     private OnChangeColor(newColor: EGItemColorTypes, oldColor: EGItemColorTypes): void {

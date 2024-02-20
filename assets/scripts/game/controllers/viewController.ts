@@ -10,6 +10,7 @@ import { GItemBaseView } from "../ui-components/gItemBaseView";
 import { EGItemBaseEvents } from "../game-items/types/gItemBaseEvents";
 import { EAtomType } from "../meta-atoms/types/eAtomType";
 import { EAtomDamageableEvents } from "../meta-atoms/types/eAtomDamageableEvents";
+import { AnimationController } from "./animationController";
 
 
 export class ViewController extends EventTarget {
@@ -17,6 +18,7 @@ export class ViewController extends EventTarget {
         private viewPrefabStorage: ViewPrefabStorage,
         private viewConfig: ViewConfig,
         private coordsCorrector: CoordsCorrector,
+        private animationController: AnimationController,
     ) {
         super();
     }
@@ -63,6 +65,16 @@ export class ViewController extends EventTarget {
 
         if (item.HasAtom(EAtomType.Damageable)) {
             item.GetAtom(EAtomType.Damageable).once(EAtomDamageableEvents.OnDie, () => {
+                const isHaveAnimation = this.animationController.TryAnimateDestroy(item);
+                if (isHaveAnimation) {
+                    item.once(EGItemBaseEvents.OnBlockDelete, () => {
+                        item.view?.node.destroy();
+                        item.DeAttachView();
+                    })
+                } else {
+                    item.view?.node.destroy();
+                    item.DeAttachView();
+                }
                 item.off(EGItemBaseEvents.OnChangeCoords, onChangeCoords);
             })
         }

@@ -62,7 +62,7 @@ export class GItemPetard extends GItemBase {
         this.GetAtom(EAtomType.Damageable).off(EAtomDamageableEvents.OnDie, this.Destroy, this);
         this.GetAtom(EAtomType.Interaction).off(EAtomInteractionEvents.OnDoInteract, this.OnInteract, this);
 
-        this.viewInternal?.node.destroy();
+        // this.viewInternal?.node.destroy();
     }
     
     private OnInteract(): void {

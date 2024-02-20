@@ -26,6 +26,23 @@ export class AnimationController extends EventTarget {
             .to(time, {scale: new Vec3(item.view.targetScale, item.view.targetScale, 1)})
             .call(() => item.DeleteBlockBy(EBlockType.Animation))
             .start();
+
+    }
+
+    TryAnimateDestroy(item: GItemBase): boolean {
+        if (!item.HasAtom(EAtomType.Animation)) return;
+        if (!item.view) return;
+
+        const time = 0.2;
+
+        item.SetBlockBy(EBlockType.Animation);
+        // @ts-ignore
+        tween(item.view.node)
+            .to(time, {scale: Vec3.ZERO})
+            .call(() => item.DeleteBlockBy(EBlockType.Animation))
+            .start();
+
+            return true;
     }
 
     TryAnimateMoveTo(item: GItemBase, startCell: GameCell, targetCell: GameCell) {
