@@ -3718,6 +3718,21 @@
     "fieldVFX": {
       "__id__": 17
     },
+    "currentScore": {
+      "__id__": 35
+    },
+    "targetScore": {
+      "__id__": 48
+    },
+    "movesLeft": {
+      "__id__": 63
+    },
+    "buttonBoosterSwap": {
+      "__id__": 77
+    },
+    "buttonExit": {
+      "__id__": 90
+    },
     "_id": "a6WCD4kLNA85ENaHJIcq7y"
   },
   {
