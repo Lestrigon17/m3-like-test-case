@@ -1,3 +1,4 @@
+import { AtomAnimation } from "./atomAnimation";
 import { AtomCellGeneration } from "./atomCellGeneration";
 import { AtomColor } from "./atomColor";
 import { AtomDamageable } from "./atomDamageable";
@@ -9,4 +10,5 @@ export const AtomRegistry = {
     [EAtomType.Gravitation]: AtomGravitation,
     [EAtomType.CellGeneration]: AtomCellGeneration,
     [EAtomType.Color]: AtomColor,
+    [EAtomType.Animation]: AtomAnimation,
 }

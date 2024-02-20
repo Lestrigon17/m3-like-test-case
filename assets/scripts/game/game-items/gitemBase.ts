@@ -6,6 +6,7 @@ import { ERenderLayer } from "../types/eRenderLayer";
 import { EGItemBaseEvents } from "./types/gItemBaseEvents";
 import { EGItemType } from "./types/eGItemTypes";
 import { AtomContainer } from "../meta-atoms/atomContainer";
+import { GItemBaseView } from "../ui-components/gItemBaseView";
 
 /**
  * Events:
@@ -21,6 +22,7 @@ export abstract class GItemBase extends AtomContainer {
 	public get block(): EBlockType 			{ return this.blockFlags; 		    }
     public get type(): EGItemType           { return this.typeInternal;         }
     public get coords(): Coords             { return this.coordsInternal;       }
+    public get view(): undefined | GItemBaseView { return this.viewInternal as GItemBaseView;         }
 
     protected renderLayerInternal: ERenderLayer = ERenderLayer.Base;
     protected physicLayerInternal: EPhysicLayer = EPhysicLayer.Base;

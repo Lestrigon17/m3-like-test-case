@@ -3,10 +3,12 @@ import { CellController } from "./cellController";
 import { everyPhysicLayer } from "../gameUtils";
 import { EPhysicLayer } from "../types/ePhysicLayer";
 import { GameCell } from "../gameCell";
+import { AnimationController } from "./animationController";
 
 export class GravitationController extends EventTarget {
     constructor(
         private cellController: CellController,
+        private animationController: AnimationController,
     ) {
         super();
     }
@@ -15,16 +17,19 @@ export class GravitationController extends EventTarget {
         everyPhysicLayer(layer => {
             for (let row = this.cellController.maxRow; row > 0; row--) {
                 for (let column = 0; column < this.cellController.maxColumn; column++) {
-                    const cell = this.cellController.GetCell(row, column);
-                    if (!cell) continue;
-                    const content = cell.GetContent(layer);
+                    const targetCell = this.cellController.GetCell(row, column);
+                    if (!targetCell) continue;
+                    const content = targetCell.GetContent(layer);
                     if (content) continue;
 
-                    const topCell = this.FindCellWithContentToTop(layer, row, column);
-                    if (!topCell) continue;
-                    const targetContent = topCell.GetContent(layer);
-                    topCell.DeleteContent(layer);
-                    cell.SetContent(layer, targetContent);
+                    const attackerCell = this.FindCellWithContentToTop(layer, row, column);
+                    if (!attackerCell) continue;
+                    const targetContent = attackerCell.GetContent(layer);
+                    attackerCell.DeleteContent(layer);
+
+                    this.animationController.TryAnimateMoveTo(targetContent, attackerCell, targetCell);
+
+                    targetCell.SetContent(layer, targetContent);
                 }
             }
         })
@@ -39,6 +44,9 @@ export class GravitationController extends EventTarget {
                 if (!cell) continue;
                 const content = cell.GetContent(layer);
                 if (content) continue;
+                
+                const attackerCell = this.FindCellWithContentToTop(layer, row, column);
+                if (!attackerCell) continue;
 
                 return true;
             }

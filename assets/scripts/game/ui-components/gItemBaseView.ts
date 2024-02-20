@@ -5,6 +5,10 @@ const {ccclass, property} = _decorator;
 @ccclass("GItemBaseView")
 export class GItemBaseView extends Component {
     @property(UITransform) uiTransform!: UITransform;
+
+    public get targetScale(): number { return this.targetScaleInternal; }
+
+    protected targetScaleInternal: number = 0;
     protected referenceSize: number = 0;
 
     protected onLoad(): void {
@@ -14,6 +18,7 @@ export class GItemBaseView extends Component {
 
     public SetTargetSize(size: number): void {
         const targetScale = size / this.referenceSize;
+        this.targetScaleInternal = targetScale;
         this.node.setScale(new Vec3(targetScale, targetScale, 1));
     }
 }

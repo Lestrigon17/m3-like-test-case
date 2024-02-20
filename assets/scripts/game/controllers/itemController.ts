@@ -5,6 +5,7 @@ import { EItemControllerEvents } from "../types/eItemControllerEvents";
 import { GItemBase } from "../game-items/gItemBase";
 import { EAtomType } from "../meta-atoms/types/eAtomType";
 import { Coords } from "../coords";
+import { AnimationController } from "./animationController";
 
 type ItemTypeFromEnum<Key, Storage extends Record<string, abstract new (...args: any[]) => any>> = Key extends keyof Storage ? InstanceType<Storage[Key]> : never;
 /**
@@ -12,6 +13,11 @@ type ItemTypeFromEnum<Key, Storage extends Record<string, abstract new (...args:
  * OnCreateItem (item)
  */
 export class ItemController extends EventTarget {
+    constructor(
+        private animationController: AnimationController,
+    ) {
+        super()
+    }
     CreateItem<
         Key extends EGItemType, 
         RType = ItemTypeFromEnum<Key, typeof GItemRegistry>
@@ -28,6 +34,8 @@ export class ItemController extends EventTarget {
         }
 
         this.emit(EItemControllerEvents.OnCreateItem, item);
+
+        this.animationController.TryAnimateSpawn(item);
 
         return item as RType;
     }

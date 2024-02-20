@@ -6,6 +6,9 @@ import { GameCellView } from "./ui-components/gameCellView";
 import { AtomContainer } from "./meta-atoms/atomContainer";
 import { EAtomType } from "./meta-atoms/types/eAtomType";
 import { EAtomDamageableEvents } from "./meta-atoms/types/eAtomDamageableEvents";
+import { EBlockType } from "./types/eBlockLayer";
+import { EGameCellEvents } from "./types/eGameCellEvents";
+import { EGItemBaseEvents } from "./game-items/types/gItemBaseEvents";
 
 export class GameCell extends AtomContainer {
     public get coords(): Coords { return this.coordsInternal; }
@@ -15,6 +18,7 @@ export class GameCell extends AtomContainer {
     protected viewInternal?: GameCellView;
 
     private dieEvents: Map<EPhysicLayer, () => void | undefined> = new Map();
+    private blockEvents: Map<EPhysicLayer, () => void | undefined> = new Map();
 
     public AttachView(view: GameCellView) {
         this.viewInternal = view;
@@ -47,15 +51,26 @@ export class GameCell extends AtomContainer {
     public SetContent(physicLayer: EPhysicLayer, content: GItemBase): void {
         if (this.HasContent(physicLayer)) throw Error("Can't attach content to duty layer");
 
-        content.SetCoords(this.coords);
+        if (!content.IsBlockedBy(EBlockType.Animation)) {
+            content.SetCoords(this.coords);
+        }
+
         this.storage.set(physicLayer, content);
 
         const onDie = () => {
             this.DeleteContent(physicLayer);
         }
+        const OnBlockDelete = () => {
+            this.emit(EGameCellEvents.OnContentStateChanged);
+        }
 
         this.dieEvents.set(physicLayer, onDie);
+        this.blockEvents.set(physicLayer, OnBlockDelete);
+
         content.GetAtom(EAtomType.Damageable)?.on(EAtomDamageableEvents.OnDie, onDie);
+        content.on(EGItemBaseEvents.OnBlockDelete, OnBlockDelete);
+
+        this.emit(EGameCellEvents.OnSetContent, content);
     }
 
     public DeleteContent(physicLayer: EPhysicLayer): void {
@@ -68,6 +83,13 @@ export class GameCell extends AtomContainer {
             this.dieEvents.delete(physicLayer);
         }
 
+        const blockEvent = this.blockEvents.get(physicLayer);
+        if (blockEvent) {
+            content.off(EGItemBaseEvents.OnBlockDelete, blockEvent);
+        }
+
+
         this.storage.delete(physicLayer);
+        this.emit(EGameCellEvents.OnDeleteContent);
     }
 } 

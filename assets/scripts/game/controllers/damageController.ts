@@ -23,6 +23,7 @@ export class DamageController extends EventTarget {
 
             const content = cell.GetContent(layer);
             if (!content) return;
+            if (content.isBlocked) return;
 
             const damageableAtom = content.GetAtom(EAtomType.Damageable);
             if (!damageableAtom) return;

@@ -4,4 +4,5 @@ export enum EAtomType {
     Explosive,
     Color,
     CellGeneration,
+    Animation,
 }

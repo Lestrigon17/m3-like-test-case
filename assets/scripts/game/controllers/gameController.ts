@@ -22,6 +22,8 @@ import { GItemBase } from "../game-items/gItemBase";
 import { EColorCombinationType } from "../types/eColorCombinationType";
 import { GravitationController } from "./gravitationController";
 import { SpawnController } from "./spawnController";
+import { AnimationController } from "./animationController";
+import { EGameCellEvents } from "../types/eGameCellEvents";
 
 const {ccclass, property} = _decorator;
 
@@ -37,8 +39,11 @@ export class GameController extends Component {
     private itemController: ItemController;
     private spawnController: SpawnController;
     private damageController: DamageController;
+    private animationController: AnimationController;
     private gravitationController: GravitationController;
     private colorCombinationController: ColorCombinationController;
+
+    private isRequireIteration: boolean = false;
 
     protected onLoad(): void {
         const rows = 9, columns = 10;
@@ -50,12 +55,15 @@ export class GameController extends Component {
             this.coordsCorrector
         )
 
-        // Item controller
-        this.itemController = new ItemController();
-        this.itemController.on(EItemControllerEvents.OnCreateItem, this.viewController.OnCreateGameItem, this.viewController);
-
         // Coords corrector
         this.coordsCorrector.SetGridSize(rows, columns);
+
+        // Animation controller
+        this.animationController = new AnimationController(this.coordsCorrector);
+
+        // Item controller
+        this.itemController = new ItemController(this.animationController);
+        this.itemController.on(EItemControllerEvents.OnCreateItem, this.viewController.OnCreateGameItem, this.viewController);
 
         // Cell controller
         this.cellController = new CellController(this.itemController);
@@ -73,7 +81,10 @@ export class GameController extends Component {
         this.cursorController.node.on(ECursorControllerEvents.OnCursorClick, this.OnCursorClick, this);
 
         // gravitation controller
-        this.gravitationController = new GravitationController(this.cellController);
+        this.gravitationController = new GravitationController(
+            this.cellController,
+            this.animationController,
+        );
 
         // spawn controller
         this.spawnController = new SpawnController(
@@ -92,20 +103,27 @@ export class GameController extends Component {
 
         // Prepare field
         this.cellController.FillField(EGItemType.ColorItem);
+        this.spawnController.Initialize();
+
+        this.cellController.EveryCoords((row, column) => {
+            this.cellController.GetCell(row, column)?.on(EGameCellEvents.OnContentStateChanged, this.OnCellContentChanged, this)
+        })
         
-        this.MakeIteration();
+        this.isRequireIteration = true;
     }
 
     protected onDestroy(): void {
         this.cellController.off(ECellControllerEvents.OnCreateCell, this.viewController.OnCreateCell, this.viewController);
         this.itemController.off(EItemControllerEvents.OnCreateItem, this.viewController.OnCreateGameItem, this.viewController);
         this.cursorController.node.off(ECursorControllerEvents.OnCursorClick, this.OnCursorClick, this);
+
+        this.cellController.EveryCoords((row, column) => {
+            this.cellController.GetCell(row, column)?.off(EGameCellEvents.OnContentStateChanged, this.OnCellContentChanged, this)
+        })
     }
 
     private MakeIteration(): void {
-        console.log("Iteration")
         this.gravitationController.MakeIteration();
-        this.spawnController.MakeIteration();
 
         const combinations = this.colorCombinationController.GetAvailableCombinations();
 
@@ -117,9 +135,9 @@ export class GameController extends Component {
             })
         })
 
-        if (this.gravitationController.IsRequireNextIteration()) {
-            this.MakeIteration();
-        }
+        // if (this.gravitationController.IsRequireNextIteration()) {
+        //     this.MakeIteration();
+        // }
     }
 
     private OnCursorClick(targetCoords: Coords): void {
@@ -134,5 +152,16 @@ export class GameController extends Component {
         })
 
         this.MakeIteration();
+    }
+
+    private OnCellContentChanged() {
+        this.isRequireIteration = true;
+    }
+
+    protected lateUpdate(dt: number): void {
+        if (this.isRequireIteration) {
+            this.MakeIteration()
+            this.isRequireIteration = false;
+        }
     }
 }
