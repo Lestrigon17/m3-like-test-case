@@ -1,0 +1,14 @@
+{
+  "projects": {
+    "own-projects-75474": "own-projects-75474"
+  },
+  "targets": {
+    "own-projects-75474": {
+      "hosting": {
+        "m3-like-test-case-preview": [
+          "m3-like-test-case-preview"
+        ]
+      }
+    }
+  }
+}

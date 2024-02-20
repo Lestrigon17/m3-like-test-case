@@ -3,5 +3,8 @@
   "uuid": "ff3f7365-a0ca-4fa7-8250-c822affda7c6",
   "creator": {
     "version": "3.8.1"
+  },
+  "scripts": {
+    "deploy:preview": "firebase deploy --only hosting:m3-like-test-case-preview"
   }
 }

@@ -1,0 +1,8 @@
+{
+  "hosting": [
+      {
+          "target": "m3-like-test-case-preview",
+          "public": "build/web-desktop"
+      }
+  ]
+}
