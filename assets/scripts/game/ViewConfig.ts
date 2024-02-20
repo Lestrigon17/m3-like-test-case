@@ -1,5 +1,6 @@
 import { Button, Component, Label, Node, Vec3, _decorator, instantiate } from "cc";
 import { ERenderLayer } from "./types/eRenderLayer";
+import { EndGameOverlay } from "./ui-components/endGameOverlay";
 
 const {ccclass, property} = _decorator;
 
@@ -19,6 +20,7 @@ export class ViewConfig extends Component {
     @property({type: Label, ...UIGroup}) movesLeft!: Label;
     @property({type: Button, ...UIGroup}) buttonBoosterSwap!: Button;
     @property({type: Button, ...UIGroup}) buttonExit!: Button;
+    @property({type: EndGameOverlay, ...UIGroup}) endGameOverlay!: EndGameOverlay;
 
     private layers: Map<ERenderLayer, Node> = new Map();
 
