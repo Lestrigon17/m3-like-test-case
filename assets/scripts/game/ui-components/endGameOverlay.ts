@@ -9,9 +9,9 @@ export class EndGameOverlay extends Component {
     @property(Button) buttonRestart!: Button;
     @property(Button) buttonExit!: Button;
 
-    protected onLoad(): void {
-        this.node.active = false;
-    }
+    // protected start(): void {
+    //     this.node.active = false;
+    // }
 
     UpdateStatus(isWin: boolean) {
         this.statusWin.active = isWin;

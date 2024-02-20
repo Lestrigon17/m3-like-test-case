@@ -145,15 +145,10 @@ export class GameController extends Component {
         this.viewController.on(EViewControllerEvents.OnClickSwapBooster, this.OnClickSwapBooster, this);
     }
 
-    public ShowEndGameOverlay(isWin: boolean): void {
-        this.viewConfig.endGameOverlay.UpdateStatus(isWin);
-        this.viewConfig.endGameOverlay.node.active = true;
-    }
-
     protected onDestroy(): void {
         this.cellController.off(ECellControllerEvents.OnCreateCell, this.viewController.OnCreateCell, this.viewController);
         this.itemController.off(EItemControllerEvents.OnCreateItem, this.viewController.OnCreateGameItem, this.viewController);
-        this.cursorController.node.off(ECursorControllerEvents.OnCursorClick, this.OnCursorClick, this);
+        this.cursorController.node?.off(ECursorControllerEvents.OnCursorClick, this.OnCursorClick, this);
 
         this.gameModel.off(EGameModelEvents.OnMovesOver, this.OnMovesOver, this);
         this.gameModel.off(EGameModelEvents.OnScoreGot, this.OnScoreGot, this);
@@ -273,6 +268,7 @@ export class GameController extends Component {
     }
 
     private EndGame(isWin: boolean): void {
+        if (this.isGameFinished) return;
         this.isGameFinished = true;
         this.viewController.ShowEndGameOverlay(isWin);
         // this.viewConfig
@@ -284,7 +280,7 @@ export class GameController extends Component {
     }
     private OnClickRestartGame(): void {
         this.isGameFinished = true;
-        Services.Storage.get(Services.Types.Scene).Run("game");
+        Services.Storage.get(Services.Types.Scene).Run("game")
     }
     private OnClickSwapBooster(): void {
 

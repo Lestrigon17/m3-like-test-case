@@ -96,6 +96,12 @@ export class ViewController extends EventTarget {
         }
     }
 
+    public ShowEndGameOverlay(isWin: boolean): void {
+        this.viewConfig.endGameOverlay.UpdateStatus(isWin);
+        this.viewConfig.endGameOverlay.node.active = true;
+    }
+
+
     public Destroy(): void {
         this.gameModel.off(EGameModelEvents.OnChangeMoves, this.OnChangeMoves, this);
         this.gameModel.off(EGameModelEvents.OnChangeScore, this.OnChangeScore, this);

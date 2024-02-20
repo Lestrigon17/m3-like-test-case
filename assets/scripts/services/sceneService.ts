@@ -62,7 +62,7 @@ export class SceneService extends Component {
                     return reject(err);
                 }
 
-                this.loadSceneCache.set(name, resource);
+                // this.loadSceneCache.set(name, resource);
                 resolve(resource);
             });
         })
@@ -80,7 +80,7 @@ export class SceneService extends Component {
 
         let resource: SceneAsset;
 
-        try {
+        try { 
             resource = await this.Load(name, onProgress);
         } catch(e) {
             console.error(e);
