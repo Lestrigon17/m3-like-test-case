@@ -28,6 +28,7 @@ export class GItemRainbow extends GItemBase {
             new AtomRegistry[EAtomType.Damageable]()
                 .SetHealth(1)
                 .SetFilterDamage(EDamageType.Booster, true)
+                .SetFilterDamage(EDamageType.Combination, true)
         )
 
         this.GetAtom(EAtomType.Damageable)
