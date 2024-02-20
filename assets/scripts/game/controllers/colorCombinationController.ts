@@ -75,6 +75,8 @@ export class ColorCombinationController extends EventTarget {
             const color = content.GetAtom(EAtomType.Color).color;
             if (color !== requireColor) return;
 
+            if (content.isBlocked) return;
+
             combination.push(content);
 
             coordsDirections.forEach((coord) => {

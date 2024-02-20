@@ -20,6 +20,7 @@ import { DamageController } from "./damageController";
 import { EDamageType } from "../meta-atoms/types/eDamageType";
 import { GItemBase } from "../game-items/gItemBase";
 import { EColorCombinationType } from "../types/eColorCombinationType";
+import { GravitationController } from "./gravitationController";
 
 const {ccclass, property} = _decorator;
 
@@ -34,6 +35,7 @@ export class GameController extends Component {
     private viewController: ViewController;
     private itemController: ItemController;
     private damageController: DamageController;
+    private gravitationController: GravitationController;
     private colorCombinationController: ColorCombinationController;
 
     protected onLoad(): void {
@@ -67,8 +69,11 @@ export class GameController extends Component {
 
         // cursor Controller
         this.cursorController.node.on(ECursorControllerEvents.OnCursorClick, this.OnCursorClick, this);
+
+        // gravitation controller
+        this.gravitationController = new GravitationController(this.cellController);
         
-        // Add generator info for cells
+        // Add generator info for cells 
         for (let col = 0; col < columns; col++) {
             this.cellController.storage[0][col].AddAtom(
                 new AtomRegistry[EAtomType.CellGeneration]()
@@ -89,6 +94,8 @@ export class GameController extends Component {
     }
 
     private MakeIteration(): void {
+        this.gravitationController.MakeIteration();
+
         const combinations = this.colorCombinationController.GetAvailableCombinations();
 
         combinations.get(EPhysicLayer.Tiles)?.forEach((combination) => {
@@ -110,5 +117,7 @@ export class GameController extends Component {
                 this.damageController.TakeDamage(item.coords, EDamageType.Combination, 1);
             })
         })
+
+        this.MakeIteration();
     }
 }

@@ -47,6 +47,7 @@ export class GameCell extends AtomContainer {
     public SetContent(physicLayer: EPhysicLayer, content: GItemBase): void {
         if (this.HasContent(physicLayer)) throw Error("Can't attach content to duty layer");
 
+        content.SetCoords(this.coords);
         this.storage.set(physicLayer, content);
 
         const onDie = () => {

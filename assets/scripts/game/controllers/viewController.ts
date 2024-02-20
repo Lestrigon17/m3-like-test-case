@@ -7,6 +7,9 @@ import { CoordsCorrector } from "./coordsCorrector";
 import { GItemBase } from "../game-items/gItemBase";
 import { GameViewsRegistry } from "../ui-components/gameViewsRegistry";
 import { GItemBaseView } from "../ui-components/gItemBaseView";
+import { EGItemBaseEvents } from "../game-items/types/gItemBaseEvents";
+import { EAtomType } from "../meta-atoms/types/eAtomType";
+import { EAtomDamageableEvents } from "../meta-atoms/types/eAtomDamageableEvents";
 
 
 export class ViewController extends EventTarget {
@@ -52,5 +55,16 @@ export class ViewController extends EventTarget {
 
         component.SetTargetSize(this.coordsCorrector.cellSize);
         item.AttachView(component);
+
+        const onChangeCoords = (oldCoords, newCoords) => {
+            node.setPosition(this.coordsCorrector.ConvertToPosition(newCoords));
+        }
+        item.on(EGItemBaseEvents.OnChangeCoords, onChangeCoords);
+
+        if (item.HasAtom(EAtomType.Damageable)) {
+            item.GetAtom(EAtomType.Damageable).once(EAtomDamageableEvents.OnDie, () => {
+                item.off(EGItemBaseEvents.OnChangeCoords, onChangeCoords);
+            })
+        }
     }
 }

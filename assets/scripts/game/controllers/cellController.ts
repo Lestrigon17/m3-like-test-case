@@ -9,11 +9,14 @@ import { EAtomType } from "../meta-atoms/types/eAtomType";
 import { GItemBase } from "../game-items/gItemBase";
 
 export class CellController extends EventTarget {
+    public get maxRow(): number     { return this.maxRowInternal;       }
+    public get maxColumn(): number  { return this.maxColumnInternal;    }
+
     public get storage(): Array<GameCell[]> { return this.storageInternal; }
 
     protected storageInternal: Array<GameCell[]> = [];
-    protected maxRow: number = 0;
-    protected maxColumn: number = 0;
+    protected maxRowInternal: number = 0;
+    protected maxColumnInternal: number = 0;
 
     constructor(
         private itemController: ItemController
@@ -22,8 +25,8 @@ export class CellController extends EventTarget {
     }
 
     public SetGridSize(maxRow: number, maxColumn: number): this {
-        this.maxRow = maxRow;
-        this.maxColumn = maxColumn;
+        this.maxRowInternal = maxRow;
+        this.maxColumnInternal = maxColumn;
 
         for (let row = 0; row < maxRow; row++) {
             this.storageInternal[row] ??= [];
@@ -44,8 +47,8 @@ export class CellController extends EventTarget {
     }
 
     public EveryCoords(callback: (row: number, column: number) => void): void {
-        for (let row = 0; row < this.maxRow; row++) {
-            for (let column = 0; column < this.maxColumn; column++) {
+        for (let row = 0; row < this.maxRowInternal; row++) {
+            for (let column = 0; column < this.maxColumnInternal; column++) {
                 callback(row, column);
             }
         }
