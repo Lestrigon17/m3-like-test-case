@@ -5,4 +5,5 @@ export enum EAtomType {
     Color,
     CellGeneration,
     Animation,
+    Interaction,
 }

@@ -11,6 +11,7 @@ import { EAtomColorEvents } from "../meta-atoms/types/eAtomColorEvents";
 import { EGItemColorTypes } from "./types/eGItemColorTypes";
 import { getColorCombination } from "../gameUtils";
 import { EAtomDamageableEvents } from "../meta-atoms/types/eAtomDamageableEvents";
+import { EAtomExplosiveDamagePattern } from "../meta-atoms/types/eAtomExplosiveDamagePattern";
 
 export class GItemPetard extends GItemBase {
     protected renderLayerInternal: ERenderLayer = ERenderLayer.Tiles;
@@ -40,6 +41,11 @@ export class GItemPetard extends GItemBase {
 
         this.AddAtom(
             new AtomRegistry[EAtomType.Animation]()
+        )
+
+        this.AddAtom(
+            new AtomRegistry[EAtomType.Explosive]()
+                .SetDamagePattern(EAtomExplosiveDamagePattern.Petard)
         )
     }
 
