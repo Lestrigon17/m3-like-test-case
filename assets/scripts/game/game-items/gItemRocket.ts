@@ -9,6 +9,7 @@ import { gItemColorView } from "../ui-components/gItemColorView";
 import { EAtomDamageableEvents } from "../meta-atoms/types/eAtomDamageableEvents";
 import { EAtomExplosiveDamagePattern } from "../meta-atoms/types/eAtomExplosiveDamagePattern";
 import { EAtomInteractionEvents } from "../meta-atoms/types/eAtomInteractionEvents";
+import { GItemHorizontalRocketView } from "../ui-components/gItemHorizontalRocketView";
 
 export class GItemHorizontalRocket extends GItemBase {
     protected renderLayerInternal: ERenderLayer = ERenderLayer.Tiles;
@@ -16,7 +17,7 @@ export class GItemHorizontalRocket extends GItemBase {
 
     protected typeInternal: EGItemType = EGItemType.HorizontalRocketItem;
 
-    protected declare viewInternal?: gItemColorView;
+    protected declare viewInternal?: GItemHorizontalRocketView;
 
     constructor() {
         super();

@@ -25,6 +25,7 @@ import { SpawnController } from "./spawnController";
 import { AnimationController } from "./animationController";
 import { EGameCellEvents } from "../types/eGameCellEvents";
 import { ExplosionController } from "./explosionsController";
+import { EGItemColorTypes } from "../game-items/types/eGItemColorTypes";
 
 const {ccclass, property} = _decorator;
 
@@ -185,6 +186,17 @@ export class GameController extends Component {
                     const cell = this.cellController.GetCell(targetCoords);
                     const item = this.itemController.CreateItem(EGItemType.HorizontalRocketItem, targetCoords);
                     cell.SetContent(layer, item);
+
+                    break;
+                }
+                case EColorCombinationType.Rainbow: {
+                    const cell = this.cellController.GetCell(targetCoords);
+                    const item = this.itemController.CreateItem(EGItemType.RainbowItem, targetCoords);
+                    cell.SetContent(layer, item);
+
+                    if (item.HasAtom(EAtomType.Color)) {
+                        item.GetAtom(EAtomType.Color).color = content.GetAtom(EAtomType.Color)?.color ?? EGItemColorTypes.Yellow;
+                    }
 
                     break;
                 }

@@ -10,15 +10,24 @@ import { EAtomExplosiveDamagePattern } from "../meta-atoms/types/eAtomExplosiveD
 import { Coords } from "../coords";
 import { EDamageType } from "../meta-atoms/types/eDamageType";
 import { CellController } from "./cellController";
+import { EPhysicLayer } from "../types/ePhysicLayer";
 
 // todo: Вынести в отдельный файл
 const patterns = {
     [EAtomExplosiveDamagePattern.Petard]: [
-        Coords.ZERO,
-        Coords.LEFT,
-        Coords.RIGHT,
-        Coords.TOP,
-        Coords.BOTTOM,
+        new Coords(0, 0, true),
+        new Coords(0, 1, true),
+        new Coords(0, 2, true),
+        new Coords(0, -1, true),
+        new Coords(0, -2, true),
+        new Coords(1, 0, true),
+        new Coords(2, 0, true),
+        new Coords(-1, 0, true),
+        new Coords(-2, 0, true),
+        new Coords(1, 1, true),
+        new Coords(-1, 1, true),
+        new Coords(-1, -1, true),
+        new Coords(1, -1, true),
     ]
 }
 
@@ -76,7 +85,6 @@ export class ExplosionController extends EventTarget {
         switch(damagePattern) {
             case EAtomExplosiveDamagePattern.RocketHorizontal: {
                 const maxColumn = this.cellController.maxColumn;
-
                 // destroy booster
                 const targetCoords = item.coords;
                 this.damageController.TakeDamage(targetCoords, EDamageType.Booster, 1);
@@ -92,6 +100,27 @@ export class ExplosionController extends EventTarget {
                     const targetCoords = new Coords(item.coords.row, column);
                     this.damageController.TakeDamage(targetCoords, EDamageType.Booster, 1);
                 }
+                break;
+            }
+
+            case EAtomExplosiveDamagePattern.Rainbow: {
+                if (!damageColorFilter) throw Error("No valid case for rainbow without color");
+                const targetCoords: Coords[] = [
+                    item.coords
+                ];
+                this.cellController.EveryCoords((row, column) => {
+                    const cell = this.cellController.GetCell(row, column);
+                    if (!cell.HasContent(EPhysicLayer.Tiles)) return;
+                    const atomColor = cell.GetContent(EPhysicLayer.Tiles).GetAtom(EAtomType.Color);
+                    if (!atomColor) return;
+                    if (atomColor.color !== damageColorFilter) return;
+                    targetCoords.push(cell.coords);
+                })
+
+                targetCoords.forEach((coords) => {
+                    this.damageController.TakeDamage(coords, EDamageType.Booster, 1);
+                })
+
                 break;
             }
         }
